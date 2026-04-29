@@ -223,10 +223,10 @@ td.fc-name{text-align:left;font-weight:700;font-size:11px;min-width:80px}
         <label>Semana</label>
         <select id="week-sel" onchange="changeWeek(this.value)">
           <option value="ALL">W14-W17 acumulado</option>
-          <option value="W13">W13 (23-29 mar)</option>
           <option value="W14">W14 (30 mar-5 abr)</option>
           <option value="W15">W15 (6-12 abr)</option>
-          <option value="W16" selected>W17 (20-26 abr) LMS</option>
+          <option value="W16">W16 (13-19 abr)</option>
+          <option value="W17" selected>W17 (20-26 abr)</option>
         </select>
       </div>
       <div class="filter-group">
@@ -1367,8 +1367,8 @@ function renderSubproc(fcs) {
 // ─── FILTER + INIT ────────────────────────────────────────────────────────
 
 // === WEEK STATE ===
-let currentWeek = 'W16';
-let rawFcs = RAW_WEEKLY.W17;   // default to W16
+let currentWeek = 'W17';
+let rawFcs = RAW_WEEKLY.W17;   // default to W17
 
 // Recompute DATA from a given rawFcs array
 function computeFromRaw(rawArr) {
@@ -1437,7 +1437,8 @@ function changeWeek(wk) {
     W13: 'W13 2026 · 23-29 mar',
     W14: 'W14 2026 · 30 mar-5 abr',
     W15: 'W15 2026 · 6-12 abr',
-    W16: 'W16 2026 · 13-19 abr'
+    W16: 'W16 2026 · 13-19 abr',
+    W17: 'W17 2026 · 20-26 abr'
   };
   document.querySelector('.header-sub').textContent =
     'Red de Fulfillment Centers MercadoLibre · ' + (subtitleMap[wk]||wk);
@@ -1465,7 +1466,7 @@ function applyFilter() {
 }
 
 // Initialize with W16 (most recent week, matches LMS Monitor default)
-changeWeek('W16');
+changeWeek('W17');
 </script>
 </body>
 </html>
