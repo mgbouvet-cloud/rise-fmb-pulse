@@ -168,6 +168,40 @@ td.fc-name{text-align:left;font-weight:700;font-size:11px;min-width:80px}
   .alert-grid{grid-template-columns:1fr}
 }
 
+/* WoW MOVEMENTS SECTION */
+.wow-headline{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.wow-summary-card{background:#fff;border-radius:10px;padding:14px 18px;box-shadow:0 1px 3px rgba(0,0,0,.07);text-align:center;border-top:3px solid #e0e0e0}
+.wow-summary-card.pos{border-top-color:#2e7d32}.wow-summary-card.neg{border-top-color:#c62828}.wow-summary-card.neu{border-top-color:#1565c0}
+.wow-summary-lbl{font-size:10px;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.wow-summary-val{font-size:24px;font-weight:800;line-height:1;margin:2px 0}
+.wow-summary-sub{font-size:10px;color:#9e9e9e;margin-top:4px}
+.wow-narrative{font-size:12px;color:#333;line-height:1.65;padding:11px 16px;background:#f8f9fc;border-radius:8px;border-left:3px solid #FFE600;margin-bottom:14px}
+.wow-narrative strong{color:#1a1a2e}
+.wow-mover{border-radius:8px;padding:11px 14px;margin-bottom:8px;border-left:4px solid #ccc;background:#fafafa}
+.wow-mover.up{border-left-color:#2e7d32;background:#f0faf0}
+.wow-mover.dn{border-left-color:#c62828;background:#fff5f5}
+.wow-mover-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.wow-mover-id{font-size:13px;font-weight:800;color:#1a1a2e}
+.wow-delta-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px}
+.wow-delta{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.wow-delta.ib-up{background:#c8e6c9;color:#1b5e20}
+.wow-delta.ib-dn{background:#ffcdd2;color:#b71c1c}
+.wow-delta.ob-up{background:#d1c4e9;color:#4a148c}
+.wow-delta.ob-dn{background:#ffcdd2;color:#b71c1c}
+.wow-cause-chips{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px}
+.wcc{font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px}
+.wcc.neg{background:#ffebee;color:#c62828}
+.wcc.pos{background:#e8f5e9;color:#2e7d32}
+.wcc.vol{background:#e3f2fd;color:#0d47a1}
+.wcc.tnd{background:#fff3e0;color:#e65100}
+.wcc.neu{background:#f5f5f5;color:#616161}
+.wow-sparkline{display:flex;align-items:flex-end;margin-top:7px;border-top:1px solid #eee;padding-top:6px}
+.wow-spark-wk{text-align:center;flex:1}
+.wow-spark-dot{border-radius:3px;display:block;font-size:9px;font-weight:700;padding:2px 1px;text-align:center}
+.wow-spark-label{font-size:8px;color:#aaa;text-align:center;margin-top:1px}
+.wow-spark-sep{color:#ddd;font-size:10px;align-self:center;padding-bottom:14px}
+.wow-nodata{text-align:center;color:#aaa;font-size:12px;padding:20px}
+
 /* QUADRANT ANNOTATIONS */
 .quadrant-labels{position:relative;height:0;overflow:visible}
 
@@ -248,6 +282,10 @@ td.fc-name{text-align:left;font-weight:700;font-size:11px;min-width:80px}
 
   <!-- KPI ROW -->
   <div class="kpi-row" id="kpiRow"></div>
+
+  <!-- SECTION: WoW MOVEMENTS -->
+  <div class="section-label" id="wowLabel">📈 Variación Semana a Semana · W17 → W18</div>
+  <div class="section" id="wowSection"></div>
 
   <!-- SECTION: PRIORIDADES Y CUADRANTE -->
   <div class="section-label">★ Mapa de Prioridades RISE</div>
@@ -1380,6 +1418,178 @@ function renderSubproc(fcs) {
   }
 }
 
+// ─── WoW MOVEMENTS ────────────────────────────────────────────────────────
+function renderWoW() {
+  const WEEK_ORDER = ['W15','W16','W17','W18'];
+  // Always compare the two most recent complete weeks regardless of week selector
+  const PREV = 'W17', CURR = 'W18';
+  const prevRaw = RAW_WEEKLY[PREV] || [];
+  const currRaw = RAW_WEEKLY[CURR] || [];
+
+  const cf = document.getElementById('filterCountry').value;
+  const ct = document.getElementById('filterTier')?.value || 'all';
+
+  // Update label dynamically
+  document.getElementById('wowLabel').textContent = `📈 Variación Semana a Semana · ${PREV} → ${CURR}`;
+
+  // Build per-FC comparison
+  const allIds = new Set([...prevRaw.map(r=>r.id), ...currRaw.map(r=>r.id)]);
+  const movers = [];
+
+  allIds.forEach(fcId => {
+    const prev = prevRaw.find(r => r.id === fcId);
+    const curr = currRaw.find(r => r.id === fcId);
+    if (!prev || !curr) return;
+    if (cf !== 'all' && curr.c !== cf) return;
+    if (ct !== 'all' && (HC_TIERS[fcId] || 'M') !== ct) return;
+
+    const pIB = computeIB(prev), cIB = computeIB(curr);
+    const pOB = computeOB(prev), cOB = computeOB(curr);
+    if (!cIB && !cOB) return;
+
+    const ibDelta    = (cIB && pIB && pIB.prod > 0) ? cIB.prod - pIB.prod : null;
+    const ibDeltaPct = (ibDelta != null) ? ibDelta / pIB.prod * 100 : null;
+    const obDelta    = (cOB && pOB && pOB.prod > 0) ? cOB.prod - pOB.prod : null;
+    const obDeltaPct = (obDelta != null) ? obDelta / pOB.prod * 100 : null;
+
+    // Volume-weighted impact in units (how many net units gained/lost vs same prod as W17)
+    const ibHours = curr.ib?.[0] || 0;
+    const obHours = curr.ob?.[0] || 0;
+    const totalImpact = (ibDelta != null ? ibDelta * ibHours : 0) + (obDelta != null ? obDelta * obHours : 0);
+
+    // Cause attribution
+    const causes = [];
+    function addCauses(cM, pM, prefix) {
+      if (!cM || !pM) return;
+      const tnsDelta  = cM.tns_pct  - pM.tns_pct;
+      const idleDelta = cM.idle_pct - pM.idle_pct;
+      const tndDelta  = cM.tnd_pct  - pM.tnd_pct;
+      const cUnits    = prefix==='IB' ? curr.ib?.[4] : curr.ob?.[4];
+      const pUnits    = prefix==='IB' ? prev.ib?.[4] : prev.ob?.[4];
+      const volDelta  = (cUnits && pUnits && pUnits > 0) ? (cUnits - pUnits) / pUnits * 100 : null;
+      if (Math.abs(tnsDelta)  >= 1.5) causes.push({ label: `%TNS ${prefix} ${tnsDelta>0?'▲':'▼'}${Math.abs(tnsDelta).toFixed(1)}pp`,  sev: tnsDelta  > 0 ? 'neg' : 'pos' });
+      if (Math.abs(idleDelta) >= 1.0) causes.push({ label: `%Idle ${prefix} ${idleDelta>0?'▲':'▼'}${Math.abs(idleDelta).toFixed(1)}pp`, sev: idleDelta > 0 ? 'neg' : 'pos' });
+      if (Math.abs(tndDelta)  >= 1.0) causes.push({ label: `%TnD ${prefix} ${tndDelta>0?'▲':'▼'}${Math.abs(tndDelta).toFixed(1)}pp`,  sev: tndDelta  > 0 ? 'tnd' : 'pos' });
+      if (volDelta != null && Math.abs(volDelta) >= 15) causes.push({ label: `Vol ${prefix} ${volDelta>0?'▲':'▼'}${Math.abs(volDelta).toFixed(0)}%`, sev: 'vol' });
+    }
+    addCauses(cIB, pIB, 'IB');
+    addCauses(cOB, pOB, 'OB');
+    if (!causes.length) causes.push({ label: totalImpact >= 0 ? 'Eficiencia operativa ↑' : 'Eficiencia operativa ↓', sev: totalImpact >= 0 ? 'pos' : 'neg' });
+
+    // 4-week combined prod sparkline
+    const sparkline = WEEK_ORDER.map(wk => {
+      const r = (RAW_WEEKLY[wk]||[]).find(x => x.id === fcId);
+      if (!r) return null;
+      const tU = (r.ib?.[4]||0) + (r.ob?.[4]||0);
+      const tH = (r.ib?.[0]||0) + (r.ob?.[0]||0);
+      return tH > 10 ? tU / tH : null;
+    });
+
+    movers.push({ id: fcId, country: curr.c, ibDelta, ibDeltaPct, obDelta, obDeltaPct, totalImpact, causes, sparkline, cIB, pIB, cOB, pOB });
+  });
+
+  // Sort lists
+  const improvers = [...movers].sort((a,b) => b.totalImpact - a.totalImpact).filter(m => m.totalImpact > 0).slice(0, 5);
+  const decliners = [...movers].sort((a,b) => a.totalImpact - b.totalImpact).filter(m => m.totalImpact < 0).slice(0, 5);
+
+  // Network summary stats
+  const ibM = movers.filter(m => m.ibDeltaPct != null);
+  const obM = movers.filter(m => m.obDeltaPct != null);
+  const avgIBDelta = ibM.length ? ibM.reduce((s,m)=>s+m.ibDeltaPct,0)/ibM.length : 0;
+  const avgOBDelta = obM.length ? obM.reduce((s,m)=>s+m.obDeltaPct,0)/obM.length : 0;
+  const netUnits   = movers.reduce((s,m)=>s+m.totalImpact,0);
+  const ibUp = ibM.filter(m=>m.ibDelta>0).length;
+  const obUp = obM.filter(m=>m.obDelta>0).length;
+
+  // Auto narrative
+  function narrativeTrend(arr, label) {
+    if (!arr.length) return '';
+    const vals = arr.filter(v => v != null);
+    if (vals.length < 2) return '';
+    const first = vals[0], last = vals[vals.length-1];
+    const pct = (last - first) / first * 100;
+    if (Math.abs(pct) < 3) return `${label} estable en 4 semanas.`;
+    return `${label} ${pct > 0 ? 'mejora' : 'cae'} ${Math.abs(pct).toFixed(0)}% en tendencia de 4 semanas.`;
+  }
+  const topImprover = improvers[0];
+  const topDecliner = decliners[0];
+  const ibTrendFcs  = movers.filter(m => m.sparkline.every((v,i) => i === 0 || m.sparkline[i-1] == null || v == null || v > m.sparkline[i-1]));
+
+  let narrative = `<strong>W18 vs W17 · Red completa:</strong> `;
+  narrative += `IB promedio ${avgIBDelta>=0?'<span style="color:#2e7d32">+':'<span style="color:#c62828"}${avgIBDelta.toFixed(1)}%</span>`;
+  narrative += ` · OB promedio ${avgOBDelta>=0?'<span style="color:#2e7d32">+':'<span style="color:#c62828"}${avgOBDelta.toFixed(1)}%</span>`;
+  narrative += ` · ${ibUp}/${ibM.length} FCs mejoraron IB, ${obUp}/${obM.length} OB. `;
+  if (topImprover) narrative += `Mayor ganancia: <strong>${topImprover.id}</strong> (${topImprover.ibDelta!=null?'IB '+(topImprover.ibDeltaPct>=0?'+':'')+topImprover.ibDeltaPct.toFixed(1)+'%':''}${topImprover.obDelta!=null?' OB '+(topImprover.obDeltaPct>=0?'+':'')+topImprover.obDeltaPct.toFixed(1)+'%':''}). `;
+  if (topDecliner) narrative += `Mayor caída: <strong>${topDecliner.id}</strong> (${topDecliner.ibDelta!=null?'IB '+(topDecliner.ibDeltaPct>=0?'+':'')+topDecliner.ibDeltaPct.toFixed(1)+'%':''}${topDecliner.obDelta!=null?' OB '+(topDecliner.obDeltaPct>=0?'+':'')+topDecliner.obDeltaPct.toFixed(1)+'%':''}). `;
+  if (ibTrendFcs.length >= 3) narrative += `<strong>${ibTrendFcs.length} FCs</strong> muestran tendencia de mejora sostenida IB en las 4 semanas.`;
+
+  // Sparkline renderer
+  function renderSparkline(spark) {
+    const valid = spark.filter(v => v != null);
+    if (!valid.length) return '';
+    const maxV = Math.max(...valid), minV = Math.min(...valid);
+    return `<div class="wow-sparkline">` + spark.map((v, i) => {
+      const wk = WEEK_ORDER[i];
+      if (v == null) return `<div class="wow-spark-wk"><div class="wow-spark-dot" style="background:#f0f0f0;color:#ccc">-</div><div class="wow-spark-label">${wk}</div></div>${i<3?'<span class="wow-spark-sep">›</span>':''}`;
+      const range = maxV - minV;
+      const norm  = range > 0 ? (v - minV) / range : 0.5;
+      const bg    = norm > 0.6 ? '#c8e6c9' : norm < 0.35 ? '#ffcdd2' : '#fff9c4';
+      return `<div class="wow-spark-wk"><div class="wow-spark-dot" style="background:${bg}">${Math.round(v)}</div><div class="wow-spark-label">${wk}</div></div>${i<3?'<span class="wow-spark-sep">›</span>':''}`;
+    }).join('') + `</div>`;
+  }
+
+  // Mover card renderer
+  function renderMoverCard(m, dir) {
+    const ibChip = m.ibDelta != null ? `<span class="wow-delta ${m.ibDelta>=0?'ib-up':'ib-dn'}">📦 IB ${m.ibDelta>=0?'▲':'▼'}${Math.abs(m.ibDeltaPct).toFixed(1)}% (${m.ibDelta>=0?'+':''}${Math.round(m.ibDelta)} u/h)</span>` : '';
+    const obChip = m.obDelta != null ? `<span class="wow-delta ${m.obDelta>=0?'ob-up':'ob-dn'}">🚀 OB ${m.obDelta>=0?'▲':'▼'}${Math.abs(m.obDeltaPct).toFixed(1)}% (${m.obDelta>=0?'+':''}${Math.round(m.obDelta)} u/h)</span>` : '';
+    const causeChips = m.causes.map(c => `<span class="wcc ${c.sev}">${c.label}</span>`).join('');
+    const impactK = Math.abs(m.totalImpact / 1000).toFixed(0);
+    return `<div class="wow-mover ${dir}">
+      <div class="wow-mover-head">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span class="wow-mover-id">${FLAGS[m.country]||''} ${m.id}</span>
+          <span class="country-pill ${m.country}">${m.country}</span>
+        </div>
+        <span style="font-size:10px;color:#9e9e9e">${dir==='up'?'+':'−'}${impactK}k u impacto neto</span>
+      </div>
+      <div class="wow-delta-row">${ibChip}${obChip}</div>
+      <div class="wow-cause-chips">${causeChips}</div>
+      ${renderSparkline(m.sparkline)}
+    </div>`;
+  }
+
+  document.getElementById('wowSection').innerHTML = `
+    <div class="wow-headline">
+      <div class="wow-summary-card ${avgIBDelta>=0?'pos':'neg'}">
+        <div class="wow-summary-lbl">Prod IB · Variación Media Red</div>
+        <div class="wow-summary-val" style="color:${avgIBDelta>=0?'#2e7d32':'#c62828'}">${avgIBDelta>=0?'+':''}${avgIBDelta.toFixed(1)}%</div>
+        <div class="wow-summary-sub">${ibUp} de ${ibM.length} FCs mejoraron · ${ibM.length-ibUp} cayeron</div>
+      </div>
+      <div class="wow-summary-card ${avgOBDelta>=0?'pos':'neg'}">
+        <div class="wow-summary-lbl">Prod OB · Variación Media Red</div>
+        <div class="wow-summary-val" style="color:${avgOBDelta>=0?'#2e7d32':'#c62828'}">${avgOBDelta>=0?'+':''}${avgOBDelta.toFixed(1)}%</div>
+        <div class="wow-summary-sub">${obUp} de ${obM.length} FCs mejoraron · ${obM.length-obUp} cayeron</div>
+      </div>
+      <div class="wow-summary-card ${netUnits>=0?'pos':'neg'} neu">
+        <div class="wow-summary-lbl">Impacto Neto en Unidades</div>
+        <div class="wow-summary-val" style="color:${netUnits>=0?'#2e7d32':'#c62828'}">${netUnits>=0?'+':''}${(netUnits/1000).toFixed(0)}k u</div>
+        <div class="wow-summary-sub">vs operar igual que W17</div>
+      </div>
+    </div>
+    <div class="wow-narrative">${narrative}</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">⬆️ Mayores Mejoras W17→W18 <small>top 5 · por impacto en unidades netas de red</small></div>
+        ${improvers.length ? improvers.map(m=>renderMoverCard(m,'up')).join('') : '<div class="wow-nodata">Sin mejoras significativas</div>'}
+      </div>
+      <div class="card">
+        <div class="card-title">⬇️ Mayores Caídas W17→W18 <small>top 5 · por impacto en unidades netas de red</small></div>
+        ${decliners.length ? decliners.map(m=>renderMoverCard(m,'dn')).join('') : '<div class="wow-nodata">Sin caídas significativas</div>'}
+      </div>
+    </div>
+  `;
+}
+
 // ─── FILTER + INIT ────────────────────────────────────────────────────────
 
 // === WEEK STATE ===
@@ -1468,6 +1678,7 @@ function rebuildDashboard() {
   let fcs = cf === 'all' ? allFcs : allFcs.filter(d => d.country === cf);
   if (ct !== 'all') fcs = fcs.filter(d => d.tier === ct);
   renderKPIs(fcs);
+  renderWoW();
   renderPriorityList(fcs);
   renderBenchmarks(fcs);
   renderAlerts(fcs);
