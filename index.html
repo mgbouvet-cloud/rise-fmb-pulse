@@ -1515,9 +1515,13 @@ function renderWoW() {
   const topDecliner = decliners[0];
   const ibTrendFcs  = movers.filter(m => m.sparkline.every((v,i) => i === 0 || m.sparkline[i-1] == null || v == null || v > m.sparkline[i-1]));
 
+  const ibColor = avgIBDelta >= 0 ? '#2e7d32' : '#c62828';
+  const ibSign  = avgIBDelta >= 0 ? '+' : '';
+  const obColor = avgOBDelta >= 0 ? '#2e7d32' : '#c62828';
+  const obSign  = avgOBDelta >= 0 ? '+' : '';
   let narrative = `<strong>W18 vs W17 · Red completa:</strong> `;
-  narrative += `IB promedio ${avgIBDelta>=0?'<span style="color:#2e7d32">+':'<span style="color:#c62828"}${avgIBDelta.toFixed(1)}%</span>`;
-  narrative += ` · OB promedio ${avgOBDelta>=0?'<span style="color:#2e7d32">+':'<span style="color:#c62828"}${avgOBDelta.toFixed(1)}%</span>`;
+  narrative += `IB promedio <span style="color:${ibColor}">${ibSign}${avgIBDelta.toFixed(1)}%</span>`;
+  narrative += ` · OB promedio <span style="color:${obColor}">${obSign}${avgOBDelta.toFixed(1)}%</span>`;
   narrative += ` · ${ibUp}/${ibM.length} FCs mejoraron IB, ${obUp}/${obM.length} OB. `;
   if (topImprover) narrative += `Mayor ganancia: <strong>${topImprover.id}</strong> (${topImprover.ibDelta!=null?'IB '+(topImprover.ibDeltaPct>=0?'+':'')+topImprover.ibDeltaPct.toFixed(1)+'%':''}${topImprover.obDelta!=null?' OB '+(topImprover.obDeltaPct>=0?'+':'')+topImprover.obDeltaPct.toFixed(1)+'%':''}). `;
   if (topDecliner) narrative += `Mayor caída: <strong>${topDecliner.id}</strong> (${topDecliner.ibDelta!=null?'IB '+(topDecliner.ibDeltaPct>=0?'+':'')+topDecliner.ibDeltaPct.toFixed(1)+'%':''}${topDecliner.obDelta!=null?' OB '+(topDecliner.obDeltaPct>=0?'+':'')+topDecliner.obDeltaPct.toFixed(1)+'%':''}). `;
