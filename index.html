@@ -1682,7 +1682,7 @@ function rebuildDashboard() {
   let fcs = cf === 'all' ? allFcs : allFcs.filter(d => d.country === cf);
   if (ct !== 'all') fcs = fcs.filter(d => d.tier === ct);
   renderKPIs(fcs);
-  renderWoW();
+  try { renderWoW(); } catch(e) { const el=document.getElementById('wowSection'); if(el) el.innerHTML='<div style="padding:16px;color:#c62828;font-size:11px;background:#fff3f3;border-radius:8px">WoW error: '+e.message+'</div>'; }
   renderPriorityList(fcs);
   renderBenchmarks(fcs);
   renderAlerts(fcs);
