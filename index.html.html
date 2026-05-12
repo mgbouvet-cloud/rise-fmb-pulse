@@ -1,0 +1,1733 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RISE FMB Operations Pulse · W16–W19 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef0f4;color:#1a1a2e;font-size:13px}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;padding:20px 32px 16px}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px}
+.header-brand{display:flex;align-items:center;gap:14px}
+.rise-badge{background:#FFE600;color:#1a1a2e;font-weight:900;font-size:14px;padding:4px 12px;border-radius:4px;letter-spacing:1px}
+.header-title{font-size:20px;font-weight:700;color:#fff}
+.header-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:3px}
+.header-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{padding:3px 10px;border-radius:12px;font-size:10px;font-weight:600;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8)}
+.pill.active{background:rgba(255,230,0,.15);border-color:#FFE600;color:#FFE600}
+.header-filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.header-filters label{font-size:11px;color:rgba(255,255,255,.6)}
+.header-filters select{padding:5px 10px;border:1px solid rgba(255,255,255,.2);border-radius:4px;background:rgba(255,255,255,.08);color:#fff;font-size:12px;cursor:pointer}
+.header-filters select option{background:#1a1a2e;color:#fff}
+
+/* LAYOUT */
+.container{max-width:1800px;margin:0 auto;padding:20px 24px}
+.section{margin-bottom:20px}
+.section-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#6c757d;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:#ddd}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+.kpi-card{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-top:3px solid transparent}
+.kpi-card.blue{border-top-color:#1565c0}
+.kpi-card.green{border-top-color:#2e7d32}
+.kpi-card.orange{border-top-color:#e65100}
+.kpi-card.red{border-top-color:#c62828}
+.kpi-card.purple{border-top-color:#6a1b9a}
+.kpi-card.yellow{border-top-color:#f9a825}
+.kpi-label{font-size:10px;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.kpi-value{font-size:26px;font-weight:800;color:#1a1a2e;line-height:1}
+.kpi-delta{font-size:11px;margin-top:4px;color:#6c757d}
+.kpi-delta .up{color:#2e7d32;font-weight:600}
+.kpi-delta .dn{color:#c62828;font-weight:600}
+.kpi-footnote{font-size:10px;color:#9e9e9e;margin-top:5px}
+
+/* CARDS */
+.card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.card-title{font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-left:3px solid #FFE600;padding-left:10px}
+.card-title small{font-size:10px;color:#6c757d;font-weight:400}
+
+/* TWO + THREE COL GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-65{display:grid;grid-template-columns:1.8fr 1fr;gap:16px}
+.grid-55{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* PRIORITY ITEMS */
+.priority-list{display:flex;flex-direction:column;gap:8px;max-height:580px;overflow-y:auto;padding-right:4px}
+.priority-item{border-radius:8px;padding:12px 14px;border-left:4px solid #ccc;background:#fafafa;cursor:pointer;transition:background .15s}
+.priority-item:hover{background:#f0f0f0}
+.priority-item.p1{border-left-color:#b71c1c;background:#fff5f5}
+.priority-item.p2{border-left-color:#e65100;background:#fff8f0}
+.priority-item.p3{border-left-color:#f9a825;background:#fffde7}
+.priority-item.p4{border-left-color:#1565c0;background:#f0f4ff}
+.pi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.pi-rank{font-size:18px;font-weight:900;color:#ccc;min-width:28px}
+.pi-rank.r1{color:#b71c1c}.pi-rank.r2{color:#e65100}.pi-rank.r3{color:#f9a825}
+.pi-fc{font-size:14px;font-weight:800;color:#1a1a2e}
+.pi-country{padding:1px 7px;border-radius:10px;font-size:9px;font-weight:700}
+.pi-score{font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px}
+.pi-score.sc-red{background:#ffebee;color:#c62828}
+.pi-score.sc-orange{background:#fff3e0;color:#e65100}
+.pi-score.sc-yellow{background:#fff8e1;color:#f57f17}
+.pi-score.sc-blue{background:#e3f2fd;color:#0d47a1}
+.pi-metrics{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.pi-chip{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.pi-chip.red{background:#ffcdd2;color:#b71c1c}
+.pi-chip.orange{background:#ffe0b2;color:#e65100}
+.pi-chip.green{background:#c8e6c9;color:#2e7d32}
+.pi-chip.blue{background:#bbdefb;color:#0d47a1}
+.pi-chip.grey{background:#f5f5f5;color:#616161}
+.pi-reco{font-size:11px;color:#444;line-height:1.45;padding:6px 8px;background:rgba(0,0,0,.03);border-radius:5px;margin-top:4px}
+.pi-reco strong{color:#1a1a2e}
+.pi-vol{font-size:10px;color:#9e9e9e}
+
+/* BENCHMARK CARDS */
+.bench-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bench-card{border-radius:8px;padding:12px 14px;border:1px solid #e0e0e0;background:#fafafa}
+.bench-card.gold{border-color:#f9a825;background:#fffde7}
+.bench-card.silver{border-color:#90a4ae;background:#f5f7f9}
+.bench-card.bronze{border-color:#a1887f;background:#fdf5f2}
+.bench-medal{font-size:18px}
+.bench-fc{font-size:16px;font-weight:800;color:#1a1a2e}
+.bench-metrics{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px}
+.bench-metric{text-align:center;padding:5px;background:#fff;border-radius:5px;border:1px solid #f0f0f0}
+.bench-metric-val{font-size:14px;font-weight:800;color:#2e7d32}
+.bench-metric-label{font-size:9px;color:#9e9e9e;text-transform:uppercase}
+.bench-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;background:#e8f5e9;color:#2e7d32;margin-left:6px}
+
+/* ALERTS */
+.alert-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.alert-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:#fafafa;border:1px solid #f0f0f0}
+.alert-icon{font-size:18px;min-width:24px;text-align:center}
+.alert-fc{font-size:13px;font-weight:700}
+.alert-msg{font-size:11px;color:#555;margin-top:1px}
+.alert-val{font-size:12px;font-weight:700;padding:2px 8px;border-radius:8px;white-space:nowrap}
+.alert-tns{background:#ffebee;color:#c62828}
+.alert-idle{background:#fff3e0;color:#e65100}
+.alert-prod{background:#e8eaf6;color:#283593}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:480px;overflow-y:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+thead th{background:#1a1a2e;color:#fff;padding:7px 8px;text-align:center;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;position:sticky;top:0;z-index:2}
+thead .th-group{font-size:10px;padding:5px 8px;letter-spacing:.8px}
+thead .th-ib{background:#1565c0}
+thead .th-ob{background:#6a1b9a}
+thead .th-tot{background:#37474f}
+thead .th-sc{background:#b71c1c}
+tbody td{padding:6px 8px;text-align:center;border-bottom:1px solid #f3f3f3;white-space:nowrap}
+tbody tr:hover td{filter:brightness(.95)}
+td.fc-name{text-align:left;font-weight:700;font-size:11px;min-width:80px}
+.country-pill{padding:1px 6px;border-radius:10px;font-size:9px;font-weight:700;display:inline-block}
+.MLA{background:#e3f2fd;color:#0d47a1}.MLB{background:#e8f5e9;color:#1b5e20}.MLM{background:#fff3e0;color:#e65100}
+.MLC{background:#fce4ec;color:#880e4f}.MCO{background:#f3e5f5;color:#4a148c}.MPE{background:#e0f7fa;color:#006064}
+.MLU{background:#fff8e1;color:#f57f17}.MUS{background:#ede7f6;color:#311b92}
+.score-cell{font-weight:700;padding:2px 6px;border-radius:4px;font-size:10px;display:inline-block}
+.rank-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block}
+.tier-badge{display:inline-block;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:800;letter-spacing:.4px;color:#fff;margin-left:5px;vertical-align:middle}
+.tier-XS{background:#9e9e9e}.tier-S{background:#42a5f5}.tier-M{background:#66bb6a}.tier-L{background:#ff8f00}.tier-XL{background:#7b1fa2}
+.tier-group-header{background:#f8f9fa;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#6c757d;padding:4px 8px!important;border-top:2px solid #e0e0e0}
+.na{color:#ccc;font-size:10px}
+
+/* CHART CONTAINERS */
+.chart-wrap{position:relative;height:340px}
+.chart-wrap-sm{position:relative;height:260px}
+.chart-wrap-lg{position:relative;height:420px}
+
+/* LEGEND ROW */
+.legend-row{display:flex;gap:14px;font-size:10px;margin-top:8px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:4px;color:#555}
+.ldot{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+/* FOOTER */
+.footer{text-align:center;color:#9e9e9e;font-size:10px;padding:16px;margin-top:8px}
+
+/* SUBPROCESS HEATMAP */
+.tab-btn{padding:5px 14px;border-radius:6px;border:1px solid #ddd;background:#f5f5f5;color:#555;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+.tab-btn.active{background:#1a1a2e;color:#FFE600;border-color:#1a1a2e}
+.sub-table{width:100%;border-collapse:collapse;font-size:11px}
+.sub-table th{background:#1a1a2e;color:#fff;padding:7px 8px;text-align:center;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;position:sticky;top:0;z-index:2}
+.sub-table td{padding:5px 8px;text-align:center;border-bottom:1px solid #f3f3f3;white-space:nowrap}
+.sub-table tr:hover td{filter:brightness(.95)}
+.sub-cell{display:inline-block;padding:2px 7px;border-radius:4px;font-weight:700;font-size:11px;min-width:52px}
+
+/* RESPONSIVE */
+@media(max-width:1200px){
+  .kpi-row{grid-template-columns:repeat(3,1fr)}
+  .grid-2,.grid-65,.grid-55{grid-template-columns:1fr}
+  .bench-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:700px){
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .bench-grid{grid-template-columns:1fr}
+  .alert-grid{grid-template-columns:1fr}
+}
+
+/* WoW MOVEMENTS SECTION */
+.wow-headline{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.wow-summary-card{background:#fff;border-radius:10px;padding:14px 18px;box-shadow:0 1px 3px rgba(0,0,0,.07);text-align:center;border-top:3px solid #e0e0e0}
+.wow-summary-card.pos{border-top-color:#2e7d32}.wow-summary-card.neg{border-top-color:#c62828}.wow-summary-card.neu{border-top-color:#1565c0}
+.wow-summary-lbl{font-size:10px;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.wow-summary-val{font-size:24px;font-weight:800;line-height:1;margin:2px 0}
+.wow-summary-sub{font-size:10px;color:#9e9e9e;margin-top:4px}
+.wow-narrative{font-size:12px;color:#333;line-height:1.65;padding:11px 16px;background:#f8f9fc;border-radius:8px;border-left:3px solid #FFE600;margin-bottom:14px}
+.wow-narrative strong{color:#1a1a2e}
+.wow-mover{border-radius:8px;padding:11px 14px;margin-bottom:8px;border-left:4px solid #ccc;background:#fafafa}
+.wow-mover.up{border-left-color:#2e7d32;background:#f0faf0}
+.wow-mover.dn{border-left-color:#c62828;background:#fff5f5}
+.wow-mover-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.wow-mover-id{font-size:13px;font-weight:800;color:#1a1a2e}
+.wow-delta-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px}
+.wow-delta{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.wow-delta.ib-up{background:#c8e6c9;color:#1b5e20}
+.wow-delta.ib-dn{background:#ffcdd2;color:#b71c1c}
+.wow-delta.ob-up{background:#d1c4e9;color:#4a148c}
+.wow-delta.ob-dn{background:#ffcdd2;color:#b71c1c}
+.wow-cause-chips{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px}
+.wcc{font-size:9px;font-weight:700;padding:1px 7px;border-radius:8px}
+.wcc.neg{background:#ffebee;color:#c62828}
+.wcc.pos{background:#e8f5e9;color:#2e7d32}
+.wcc.vol{background:#e3f2fd;color:#0d47a1}
+.wcc.tnd{background:#fff3e0;color:#e65100}
+.wcc.neu{background:#f5f5f5;color:#616161}
+.wow-sparkline{display:flex;align-items:flex-end;margin-top:7px;border-top:1px solid #eee;padding-top:6px}
+.wow-spark-wk{text-align:center;flex:1}
+.wow-spark-dot{border-radius:3px;display:block;font-size:9px;font-weight:700;padding:2px 1px;text-align:center}
+.wow-spark-label{font-size:8px;color:#aaa;text-align:center;margin-top:1px}
+.wow-spark-sep{color:#ddd;font-size:10px;align-self:center;padding-bottom:14px}
+.wow-nodata{text-align:center;color:#aaa;font-size:12px;padding:20px}
+
+/* QUADRANT ANNOTATIONS */
+.quadrant-labels{position:relative;height:0;overflow:visible}
+
+/* WEEK FILTER */
+.filter-group{display:flex;flex-direction:column;gap:3px}
+.filter-group label{font-size:10px;color:rgba(255,255,255,.6);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+/* SUBPROCESS TREND CELLS */
+.week-cells{display:flex;gap:2px;justify-content:center;align-items:center;flex-wrap:wrap}
+.wc{display:inline-block;padding:1px 4px;border-radius:3px;font-size:9px;font-weight:700;min-width:30px;text-align:center}
+.trend-cell{font-size:10px;font-weight:700;white-space:nowrap;padding:1px 4px}
+.trend-up{color:#2e7d32}.trend-dn{color:#c62828}.trend-fl{color:#888}
+/* CONCLUSIONS SECTION */
+.conclusions-box{background:#f8f9fc;border-radius:8px;padding:14px 18px;margin-top:14px;border-left:3px solid #FFE600}
+.conclusion-item{margin-bottom:10px;font-size:12px;line-height:1.5;color:#333}
+.conclusion-item:last-child{margin-bottom:0}
+.conc-sub{display:inline-block;background:#1a1a2e;color:#FFE600;font-size:9px;font-weight:800;padding:1px 7px;border-radius:10px;margin-right:6px;text-transform:uppercase;letter-spacing:.5px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-brand">
+        <span class="rise-badge">RISE</span>
+        <div>
+          <div class="header-title">FMB Operations Pulse</div>
+          <div class="header-sub">Red de Fulfillment Centers MercadoLibre · W16–W19 2026 · 13 abr – 10 may</div>
+        </div>
+      </div>
+      <div class="header-pills">
+        <span class="pill active" id="pillTotal">49 FCs · Red completa</span>
+        <span class="pill" id="pillSrc">Fuente: DM_LMS_CONSOLIDATED_METRICS_BY_DIMENSIONS</span>
+        <span class="pill" id="pillFormula">Prod = ITEM_COUNT / (TOTAL_PROCESS_TIME/3600) · idéntico a LMS Monitor</span>
+        <span class="pill" id="pillPeriod">W16–W19 2026 · 13 abr – 10 may</span>
+      </div>
+    </div>
+    <div class="header-filters">
+      <label>País</label>
+      <select id="filterCountry" onchange="applyFilter()">
+        <option value="all">Todos</option>
+        <option value="MLA">🇦🇷 Argentina</option>
+        <option value="MLB">🇧🇷 Brasil</option>
+        <option value="MLM">🇲🇽 México</option>
+        <option value="MLC">🇨🇱 Chile</option>
+        <option value="MCO">🇨🇴 Colombia</option>
+        <option value="MPE">🇵🇪 Perú</option>
+        <option value="MLU">🇺🇾 Uruguay</option>
+        <option value="MUS">🇺🇸 USA</option>
+      </select>
+      <div class="filter-group">
+        <label>Semana</label>
+        <select id="week-sel" onchange="changeWeek(this.value)">
+          <option value="ALL">W15-W18 acumulado</option>
+          <option value="W16">W16 (13-19 abr)</option>
+          <option value="W17">W17 (20-26 abr)</option>
+          <option value="W18">W18 (27 abr-3 may)</option>
+          <option value="W19" selected>W19 (4-10 may)</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Tamaño oper.</label>
+        <select id="filterTier" onchange="applyFilter()">
+          <option value="all">Todos los tamaños</option>
+          <option value="XL">🟣 XL · +1100 HC</option>
+          <option value="L">🟠 L · 500-1100 HC</option>
+          <option value="M">🟢 M · 150-500 HC</option>
+          <option value="S">🔵 S · 30-150 HC</option>
+          <option value="XS">⚫ XS · -30 HC</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- KPI ROW -->
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <!-- SECTION: WoW MOVEMENTS -->
+  <div class="section-label" id="wowLabel">📈 Variación Semana a Semana · W18 → W19</div>
+  <div class="section" id="wowSection"></div>
+
+  <!-- SECTION: PRIORIDADES Y CUADRANTE -->
+  <div class="section-label">★ Mapa de Prioridades RISE</div>
+  <div class="grid-65 section" style="align-items:start">
+    <div class="card">
+      <div class="card-title">
+        Cuadrante: Volumen vs Performance
+        <small>Burbuja = horas totales · Eje Y = performance (↑ mejor) · Colores = prioridad RISE</small>
+      </div>
+      <div class="chart-wrap-lg"><canvas id="quadrantChart"></canvas></div>
+      <div class="legend-row">
+        <span class="legend-item"><span class="ldot" style="background:#b71c1c"></span>Prioridad crítica (score ≥70)</span>
+        <span class="legend-item"><span class="ldot" style="background:#e65100"></span>Alta prioridad (55–69)</span>
+        <span class="legend-item"><span class="ldot" style="background:#f9a825"></span>Media (40–54)</span>
+        <span class="legend-item"><span class="ldot" style="background:#2e7d32"></span>Benchmark / Referencia (&lt;40)</span>
+      </div>
+    </div>
+    <div class="card" style="min-height:480px">
+      <div class="card-title">Top 10 · Focos de Intervención <small>ordenado por Prioridad RISE</small></div>
+      <div class="priority-list" id="priorityList"></div>
+    </div>
+  </div>
+
+  <!-- SECTION: BENCHMARKS -->
+  <div class="section-label">🏆 Sites de Referencia · Benchmark</div>
+  <div class="grid-2 section">
+    <div class="card">
+      <div class="card-title">📦 Top Inbound — Productividad + Eficiencia <small>referencia para metodología IB</small></div>
+      <div class="bench-grid" id="benchIB"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🚀 Top Outbound — Productividad + Eficiencia <small>referencia para metodología OB</small></div>
+      <div class="bench-grid" id="benchOB"></div>
+    </div>
+  </div>
+
+  <!-- SECTION: ALERTAS -->
+  <div class="section-label">🚨 Alertas Operativas · Outliers Extremos</div>
+  <div class="grid-3 section">
+    <div class="card">
+      <div class="card-title">⏳ Mayor %TNS Total <small>tiempo no sistémico</small></div>
+      <div id="alertTNS"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">😴 Mayor %Ociosidad Total <small>extended idle time</small></div>
+      <div id="alertIdle"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📉 Menor Productividad OB <small>sites con OB data</small></div>
+      <div id="alertProd"></div>
+    </div>
+  </div>
+
+  <!-- SECTION: CHARTS COMPARATIVOS -->
+  <div class="section-label">📊 Distribución de la Red</div>
+  <div class="grid-2 section">
+    <div class="card">
+      <div class="card-title">Productividad IB — Top vs Bottom <small>todos los FCs con IB data, ordenados</small></div>
+      <div class="chart-wrap"><canvas id="ibProdChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Productividad OB — Top vs Bottom <small>FCs con OB data, ordenados</small></div>
+      <div class="chart-wrap"><canvas id="obProdChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- SECTION: SUBPROCESS HEATMAP -->
+  <div class="section-label">🔬 Productividades Efectivas por Sub-proceso</div>
+  <div class="card section">
+    <div class="card-title">
+      Eficiencia por Proceso · u/h netas (unidades / horas productivas)
+      <div style="display:flex;gap:8px">
+        <button onclick="showSubTab('ib')" id="btnSubIB" class="tab-btn active">📦 Inbound</button>
+        <button onclick="showSubTab('ob')" id="btnSubOB" class="tab-btn">🚀 Outbound</button>
+      </div>
+    </div>
+    <div id="subprocIB">
+      <div class="table-wrap"><table class="sub-table" id="ibSubTable"></table></div>
+    </div>
+    <div id="subprocOB" style="display:none">
+      <div class="table-wrap"><table class="sub-table" id="obSubTable"></table></div>
+    </div>
+    <div class="legend-row" style="margin-top:10px">
+      <span class="legend-item"><span class="ldot" style="background:#c8e6c9"></span>Top 25% red (ref W16)</span>
+      <span class="legend-item"><span class="ldot" style="background:#fff9c4"></span>Medio 50%</span>
+      <span class="legend-item"><span class="ldot" style="background:#ffcdd2"></span>Bottom 25%</span>
+      <span class="legend-item"><span class="ldot" style="background:#f5f5f5"></span>Sin datos suficientes</span>
+      <span class="legend-item" style="margin-left:12px"><span style="color:#2e7d32;font-weight:700">&#9650;</span> Tendencia W13&rarr;W16 (&ge;3%)</span>
+      <span class="legend-item"><span style="color:#c62828;font-weight:700">&#9660;</span> Caida (&le;-3%)</span>
+      <span class="legend-item"><span style="color:#888;font-weight:700">&rarr;</span> Estable (&plusmn;3%)</span>
+    </div>
+    <div id="conclusionsBox" class="conclusions-box" style="display:none"></div>
+  </div>
+
+  <!-- SECTION: TABLA COMPLETA -->
+  <div class="section-label">📋 Detalle Completo · Todos los FCs</div>
+  <div class="card section">
+    <div class="card-title">
+      Matriz Completa · INBOUND · OUTBOUND · Total Site
+      <div class="legend-row" style="margin-top:0">
+        <span class="legend-item"><span class="ldot" style="background:#c8e6c9"></span>Top 25%</span>
+        <span class="legend-item"><span class="ldot" style="background:#fff9c4"></span>Medio 50%</span>
+        <span class="legend-item"><span class="ldot" style="background:#ffcdd2"></span>Bottom 25%</span>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="mainTable">
+        <thead>
+          <tr>
+            <th rowspan="2" style="text-align:left;min-width:85px">#</th>
+            <th rowspan="2" style="text-align:left;min-width:85px">FC</th>
+            <th rowspan="2">País</th>
+            <th colspan="4" class="th-group th-ib">📦 INBOUND (recv+checkin+stagein+putaway)</th>
+            <th colspan="4" class="th-group th-ob">🚀 OUTBOUND (picking+packing)</th>
+            <th colspan="3" class="th-group th-tot">📊 TOTAL SITE</th>
+            <th rowspan="2" class="th-sc" style="min-width:55px">Horas (k)</th>
+            <th rowspan="2" class="th-sc">Score</th>
+            <th rowspan="2" style="min-width:65px;background:#4a148c">Prioridad★</th>
+          </tr>
+          <tr>
+            <th class="th-ib">Prod u/h</th><th class="th-ib">%TNS</th><th class="th-ib">%Idle</th><th class="th-ib">%TND</th>
+            <th class="th-ob">Prod u/h</th><th class="th-ob">%TNS</th><th class="th-ob">%Idle</th><th class="th-ob">%TND</th>
+            <th class="th-tot">%TNS</th><th class="th-tot">%Idle</th><th class="th-tot">%TND</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    RISE FMB Operations Pulse · MercadoLibre · 2026-04-29 · Fuente: meli-bi-data.WHOWNER.DM_LMS_CONSOLIDATED_METRICS_BY_DIMENSIONS · W15–W18 2026<br>
+    Metodología: Prod = ITEM_COUNT / (TOTAL_PROCESS_TIME/3600) · DIMENSION_KEY='area' (inbound/outbound) · Valores idénticos a LMS Monitor · W15–W18 acumulado y por semana
+  </div>
+</div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────
+// Arrays: [pd_h, tns_h, tnd_h, idle_h, units]
+// ibr=IB recv group (incl. TL/PS), pa=putaway, obk=picking group, obc=packing group
+// hu=hu_assembly, pw=putwallin, dp=dispatch  (BQ pure process data)
+// chk_u = checkin+direct_checkin units only (for IB numerator)
+// sub = subprocess data for heatmap (BQ pure process)
+// sub = subprocess data for heatmap (BQ pure process)
+const RAW = [
+  {id:'ARBA01',c:'MLA',ib:[132414.695, 35875.042, 44.841, 528.81, 9955267],ob:[197355.526, 67676.461, 18.413, 439.304, 7740504],sub:{chk:[14483.331, 3119.466, 8.304, 56.351, 2931975],dci:[1417.193, 431.202, 4.103, 15.824, 373499],hu:[10407.194, 7733.819, 3.244, 51.076, 706394],pc:[13919.89, 2515.934, 0.0, 6.208, 2229305],pk:[21839.627, 2169.948, 0.0, 13.82, 2323157],pa:[18490.07, 4646.233, 7.577, 37.594, 2801348],pw:[4468.707, 0.88, 0.0, 1.879, 1236415],st:[2111.415, 47.183, 0.0, 36.021, 32473],dci_pct:12.7}},
+  {id:'ARBA02',c:'MLA',ib:[2945.671, 1699.68, 0.0, 48.235, 120882],ob:[3496.612, 1000.655, 0.0, 72.373, 104238],sub:{chk:[120.194, 43.445, 0.0, 2.754, 26414],dci:[73.153, 5.876, 0.0, 2.141, 24772],hu:[12027.378, 8994.914, 21.832, 23.024, 706924],pc:[88.028, 16.131, 0.0, 5.576, 4267],pk:[681.107, 138.544, 0.0, 17.31, 25053],pa:[413.898, 167.059, 0.0, 6.471, 29709],pw:[0.319, 0.318, 0.0, 0.0, 0],st:[1.027, 0.0, 0.0, 0.252, 13],dci_pct:93.8}},
+  {id:'ARBA04',c:'MLA',ib:[15724.845, 9523.294, 0.0, 169.033, 345311],ob:[19146.307, 9277.021, 3.099, 229.443, 197551],sub:{chk:[2116.137, 1582.112, 0.0, 24.137, 115185],dci:[792.22, 463.555, 0.0, 21.361, 56153],hu:[2276.811, 1283.284, 0.68, 45.549, 53691],pc:[123.19, 14.958, 0.0, 4.013, 8216],pk:[1649.389, 95.338, 0.0, 16.348, 53465],pa:[1804.994, 540.585, 0.0, 54.828, 114247],pw:[0.952, 0.138, 0.0, 0.0, 0],st:[294.798, 1.893, 0.0, 9.131, 2675],dci_pct:48.8}},
+  {id:'ARENA',c:'MLB',ib:null,ob:[0.493, 0.493, 0.0, 0.0, 0],sub:{hu:[17057.708, 8798.497, 165.867, 422.211, 2290248],pc:[18.392, 0.0, 0.0, 15.41, 0],pk:[1.365, 0.0, 0.0, 0.519, 0],dci_pct:0}},
+  {id:'ARTW01',c:'MLA',ib:null,ob:[9.907, 0.0, 0.0, 7.64, 0]},
+  {id:'BRBA01',c:'MLB',ib:[38962.678, 7633.411, 93.391, 212.142, 5425913],ob:[161348.143, 37423.831, 1606.227, 1490.581, 5414594],sub:{chk:[897.693, 116.656, 0.0, 11.789, 105715],dci:[3.681, 0.0, 0.0, 0.0, 342],hu:[7643.794, 3241.254, 40.26, 96.984, 1149886],pc:[10242.396, 843.042, 61.032, 73.708, 1403230],pk:[18381.548, 925.209, 457.662, 352.743, 1409946],pa:[6973.612, 87.83, 0.048, 10.485, 1366625],pw:[1534.222, 10.102, 0.0, 2.788, 412203],st:[81.158, 0.0, 0.0, 12.965, 1550],dci_pct:0.3}},
+  {id:'BRBA02',c:'MLB',ib:[9072.976, 3346.956, 2.152, 52.565, 433312],ob:[24816.842, 7625.732, 114.013, 202.024, 446898],sub:{chk:[30.084, 2.025, 0.0, 2.211, 872],hu:[2285.231, 1073.66, 13.652, 18.164, 118880],pc:[769.353, 72.47, 0.0, 5.726, 109118],pk:[2126.727, 77.415, 0.301, 14.044, 118361],pa:[1420.884, 275.296, 2.152, 2.054, 95390],dci_pct:0.0}},
+  {id:'BRDF01',c:'MLB',ib:[2447.674, 497.214, 116.895, 12.056, 328210],ob:[9434.072, 1490.644, 368.541, 57.943, 344774],sub:{chk:[4.245, 0.0, 0.0, 1.47, 20],hu:[393.415, 138.868, 10.511, 1.988, 81308],pc:[562.275, 31.137, 17.77, 6.087, 94643],pk:[1278.587, 29.848, 48.049, 2.183, 97249],pa:[477.467, 83.335, 23.526, 0.0, 73956],pw:[54.873, 8.203, 1.678, 0.0, 12003],dci_pct:0.0}},
+  {id:'BRES01',c:'MLB',ib:[2115.264, 320.077, 105.928, 694.379, 102309],ob:[1185.574, 39.889, 48.304, 229.373, 17236],sub:{chk:[10.382, 2.502, 0.0, 2.67, 18],dci:[0.361, 0.361, 0.0, 0.0, 0],hu:[168.057, 0.477, 11.923, 33.238, 13838],pc:[232.795, 17.034, 13.325, 14.788, 16087],pk:[415.014, 5.186, 14.405, 28.462, 16156],pa:[909.854, 147.204, 19.701, 142.88, 69695],pw:[19.144, 0.746, 0.233, 8.232, 787],st:[24.707, 20.659, 4.048, 0.0, 0],dci_pct:0.0}},
+  {id:'BRMG01',c:'MLB',ib:[39093.776, 18357.797, 124.942, 28.879, 3285680],ob:[80196.473, 29560.228, 609.136, 212.733, 2492639],sub:{chk:[2488.97, 1089.601, 11.025, 0.0, 425406],dci:[491.854, 434.057, 0.0, 0.0, 85922],hu:[6657.012, 4526.731, 10.361, 16.978, 562966],pc:[4701.032, 752.324, 38.763, 1.086, 615895],pk:[8385.33, 1038.555, 107.73, 67.116, 681221],pa:[5029.651, 1538.759, 22.638, 5.987, 807227],pw:[504.342, 93.497, 4.503, 0.283, 75131],st:[166.184, 56.416, 0.08, 5.227, 2269],dci_pct:20.2}},
+  {id:'BRMG02',c:'MLB',ib:[58088.612, 25532.874, 305.389, 749.819, 3728775],ob:[97206.791, 26643.214, 76.728, 2213.182, 2532994],sub:{chk:[2621.768, 589.115, 14.947, 23.586, 370278],dci:[109.934, 9.213, 0.0, 3.547, 26849],hu:[7389.94, 2746.944, 0.498, 176.188, 618934],pc:[5691.105, 1132.528, 0.718, 77.288, 608896],pk:[11606.329, 1543.286, 6.871, 211.762, 716088],pa:[6257.274, 2155.049, 37.58, 80.512, 783241],pw:[386.591, 41.601, 0.0, 5.508, 69061],st:[685.329, 384.899, 0.496, 23.761, 5432],dci_pct:7.3}},
+  {id:'BRMG03',c:'MLB',ib:[15675.182, 12228.017, 21.48, 77.367, 600422],ob:[28455.051, 10448.68, 107.484, 148.92, 463282],sub:{chk:[423.028, 310.476, 0.0, 1.663, 67945],dci:[134.962, 111.255, 0.0, 1.663, 31714],hu:[3627.484, 1559.319, 6.346, 16.161, 141084],pc:[390.718, 166.652, 1.334, 5.957, 17498],pk:[3216.484, 494.751, 21.517, 32.988, 137808],pa:[1376.028, 861.043, 0.036, 22.551, 152731],pw:[2.185, 2.185, 0.0, 0.0, 0],st:[568.688, 402.178, 0.0, 11.363, 1809],dci_pct:46.7}},
+  {id:'BRMG04',c:'MLB',ib:[1060.245, 873.431, 0.0, 5.797, 15735],ob:[668.119, 290.13, 8.797, 1.771, 10350],sub:{chk:[1.248, 0.347, 0.0, 0.0, 87],hu:[71.128, 35.148, 0.0, 0.891, 3789],pc:[3.043, 0.1, 0.0, 0.097, 72],pk:[175.664, 61.843, 0.138, 0.027, 3940],pa:[105.891, 61.858, 0.0, 0.0, 5399],pw:[0.455, 0.455, 0.0, 0.0, 0],st:[0.333, 0.333, 0.0, 0.0, 0],dci_pct:0.0}},
+  {id:'BRPE01',c:'MLB',ib:[19311.808, 6089.995, 72.257, 105.546, 3005905],ob:[77860.262, 21817.463, 195.727, 316.11, 2959250],sub:{chk:[200.261, 84.696, 0.197, 8.724, 6312],dci:[3.467, 3.467, 0.0, 0.0, 0],hu:[4832.857, 2480.626, 13.236, 30.304, 659004],pc:[4458.575, 628.906, 1.152, 12.18, 744289],pk:[8355.448, 382.675, 4.836, 37.176, 810629],pa:[3992.407, 977.765, 3.022, 5.573, 726945],pw:[526.126, 0.0, 13.136, 4.083, 141091],st:[6.324, 0.0, 0.202, 1.924, 31],dci_pct:0.0}},
+  {id:'BRPR01',c:'MLB',ib:[11263.923, 2591.426, 229.947, 36.127, 1743519],ob:[38363.145, 6949.049, 539.769, 206.849, 1918128],sub:{chk:[18.838, 2.366, 0.0, 0.201, 558],dci:[0.652, 0.652, 0.0, 0.0, 0],hu:[18042.43, 13876.894, 1.423, 67.456, 1111944],pc:[3065.978, 349.068, 36.407, 13.396, 493000],pk:[5047.543, 205.731, 24.86, 40.18, 495080],pa:[2358.268, 131.005, 42.9, 5.765, 464983],pw:[258.207, 6.823, 2.464, 0.564, 76221],dci_pct:0.0}},
+  {id:'BRRC01',c:'MLB',ib:[49347.652, 22436.238, 142.601, 3066.494, 2153030],ob:[19165.426, 7714.299, 22.42, 1331.458, 125111],sub:{chk:[30575.974, 708.347, 235.149, 449.855, 8153611],dci:[58.396, 30.123, 0.0, 2.326, 10582],hu:[62.094, 0.937, 8.382, 14.808, 1269],pk:[2.494, 0.0, 0.0, 0.148, 0],pa:[439.824, 292.99, 2.694, 21.154, 26888],pw:[1.639, 0.0, 0.0, 0.0, 0],st:[5311.064, 908.223, 30.331, 443.986, 67659],dci_pct:0.1}},
+  {id:'BRRC02',c:'MLB',ib:[19788.996, 7466.696, 51.161, 981.503, 955653],ob:[9289.365, 3772.702, 15.174, 366.799, 49920],sub:{chk:[13000.651, 1914.972, 662.278, 89.722, 3219679],dci:[81.84, 36.674, 1.603, 3.094, 26654],hu:[36.139, 34.668, 0.486, 0.0, 28],pa:[410.926, 352.096, 36.416, 0.0, 3094],st:[2498.109, 195.777, 1.173, 215.043, 26683],dci_pct:0.8}},
+  {id:'BRRC03',c:'MLB',ib:[30721.873, 22118.651, 73.458, 1249.29, 472275],ob:[19582.374, 11989.643, 39.629, 866.654, 76134],sub:{chk:[12753.245, 4072.792, 293.825, 232.44, 2405036],dci:[1261.252, 620.763, 4.673, 63.111, 433854],hu:[0.419, 0.0, 0.0, 0.0, 0],pa:[22.976, 3.865, 0.052, 4.082, 2067],st:[2047.685, 455.636, 0.406, 308.688, 15692],dci_pct:18.0}},
+  {id:'BRRJ02',c:'MLB',ib:[22500.139, 5957.568, 643.692, 85.347, 3201797],ob:[73422.504, 19970.805, 2548.653, 323.173, 3178348],sub:{chk:[30.355, 3.928, 0.0, 0.882, 847],hu:[17824.936, 13137.678, 55.815, 705.203, 1416157],pc:[5818.639, 1666.971, 114.871, 12.417, 859498],pk:[10746.615, 1654.17, 490.719, 88.51, 866523],pa:[3744.982, 109.388, 176.292, 15.452, 770498],pw:[671.899, 103.148, 18.54, 8.647, 121965],dci_pct:0.0}},
+  {id:'BRRS01',c:'MLB',ib:[2096.378, 442.066, 17.102, 10.301, 336840],ob:[7278.77, 1138.634, 43.969, 35.873, 320999],sub:{chk:[12.534, 0.266, 0.0, 0.0, 201],hu:[256.431, 85.979, 0.663, 2.568, 74433],pc:[487.154, 51.965, 0.526, 0.474, 85841],pk:[1024.954, 7.105, 0.824, 14.249, 89691],pa:[438.0, 29.355, 1.711, 3.691, 86209],pw:[57.683, 3.203, 0.25, 0.0, 17552],dci_pct:0.0}},
+  {id:'BRSC02',c:'MLB',ib:[110552.623, 24436.574, 1054.553, 1474.391, 11280341],ob:[273958.586, 85035.654, 5364.701, 2925.216, 8393148],sub:{chk:[5575.915, 607.558, 32.784, 51.938, 1183333],dci:[448.928, 46.359, 6.973, 14.509, 98135],hu:[5384.164, 1115.97, 10.544, 41.906, 1272785],pc:[14964.343, 2417.771, 362.084, 137.869, 2304742],pk:[31675.064, 1612.158, 898.278, 414.866, 2341534],pa:[14357.257, 1757.379, 151.216, 120.651, 2244275],pw:[2656.311, 360.813, 54.393, 23.08, 646556],st:[1814.691, 958.45, 1.304, 47.903, 13221],dci_pct:8.3}},
+  {id:'BRSP02',c:'MLB',ib:[61407.693, 14975.032, 38.969, 302.182, 11705367],ob:[282274.726, 64207.542, 40.862, 4206.161, 9965006],sub:{chk:[19.508, 4.923, 0.0, 4.378, 1311],dci:[3.84, 3.84, 0.0, 0.0, 0],hu:[11712.845, 2266.456, 3.309, 504.671, 2111892],pc:[17894.443, 3002.996, 1.556, 178.073, 2482057],pk:[28676.718, 1979.903, 0.216, 249.422, 2505229],pa:[11042.319, 362.638, 5.213, 21.064, 2823186],pw:[1892.393, 10.884, 0.0, 28.398, 589098],st:[1669.783, 1272.281, 0.787, 33.389, 20391],dci_pct:0.0}},
+  {id:'BRSP04',c:'MLB',ib:[54298.52, 8714.571, 111.762, 793.551, 11349995],ob:[230756.951, 69475.108, 838.266, 1013.176, 9179482],sub:{chk:[134.456, 9.965, 0.0, 6.594, 6253],hu:[7493.663, 3054.592, 11.96, 47.906, 1373126],pc:[14128.901, 3009.946, 44.643, 37.211, 2401901],pk:[25916.52, 1661.029, 70.668, 137.646, 2290421],pa:[10964.08, 346.597, 0.049, 105.934, 2596708],pw:[1402.336, 6.342, 6.964, 8.924, 535648],st:[96.451, 0.0, 0.0, 24.357, 1763],dci_pct:0.0}},
+  {id:'BRSP06',c:'MLB',ib:[120781.288, 52315.569, 2224.921, 3406.659, 10772190],ob:[313770.517, 98235.287, 4892.904, 5556.285, 8682790],sub:{chk:[5960.341, 825.459, 13.931, 139.87, 2477972],dci:[386.095, 4.362, 0.0, 43.409, 1347661],hu:[10523.532, 6140.328, 25.148, 230.495, 726277],pc:[17905.252, 3177.079, 150.995, 152.912, 2364373],pk:[33412.137, 5913.63, 538.445, 519.119, 2444550],pa:[11141.051, 2447.718, 163.841, 373.449, 2451462],pw:[9623.733, 1062.991, 74.392, 299.529, 1661218],st:[1273.521, 294.446, 6.261, 64.566, 12304],dci_pct:54.4}},
+  {id:'BRSP09',c:'MLB',ib:[1211.672, 644.999, 0.0, 0.238, 44348],ob:[2456.762, 581.641, 13.362, 6.841, 48309],sub:{dci:[49.991, 28.849, 0.0, 0.0, 9493],hu:[114.647, 5.519, 0.814, 1.717, 12712],pc:[2.228, 0.337, 0.0, 0.0, 57],pk:[312.1, 24.172, 3.273, 0.0, 12713],pa:[144.736, 15.57, 0.0, 0.0, 9483],dci_pct:100.0}},
+  {id:'BRSP10',c:'MLB',ib:[61941.639, 31071.151, 32.679, 994.556, 2099303],ob:[68716.146, 22423.969, 2174.194, 641.353, 1360034],sub:{chk:[4178.436, 1640.306, 0.0, 88.134, 443647],dci:[1397.688, 688.642, 0.0, 43.044, 146980],hu:[5038.184, 2322.17, 34.083, 34.692, 333550],pc:[2911.604, 913.679, 11.251, 4.448, 312573],pk:[5722.962, 336.161, 220.345, 44.923, 337688],pa:[5719.013, 2375.42, 0.0, 108.579, 380313],st:[1072.597, 603.043, 0.0, 21.969, 11823],dci_pct:33.1}},
+  {id:'BRSP11',c:'MLB',ib:[67312.286, 43529.948, 0.748, 225.782, 1791948],ob:[78361.42, 30813.524, 1.174, 175.267, 1313949],sub:{chk:[3655.836, 2182.186, 0.0, 4.258, 318392],dci:[1499.69, 1026.65, 0.0, 3.081, 96729],hu:[6467.669, 2167.312, 0.452, 23.252, 326753],pc:[3038.587, 1355.898, 0.0, 3.552, 298994],pk:[5757.74, 751.656, 0.0, 3.18, 330702],pa:[6126.328, 2331.586, 0.0, 38.861, 395968],pw:[0.299, 0.299, 0.0, 0.0, 0],st:[2991.495, 2416.949, 0.0, 16.058, 11841],dci_pct:30.4}},
+  {id:'BRSP14',c:'MLB',ib:[14147.864, 1969.884, 1.156, 183.912, 2827862],ob:[65221.837, 20918.42, 1.736, 537.915, 2615597],sub:{chk:[20.277, 0.0, 0.0, 2.3, 903],hu:[3970.236, 2921.032, 0.0, 20.851, 539634],pc:[3721.126, 281.175, 0.128, 34.569, 672028],pk:[7359.305, 627.265, 0.0, 96.802, 678889],pa:[2998.014, 17.185, 1.156, 84.06, 667345],pw:[442.476, 1.512, 0.231, 5.105, 145223],dci_pct:0.0}},
+  {id:'BRSP15',c:'MLB',ib:[9966.294, 1376.562, 148.026, 89.099, 2070133],ob:[55572.026, 15758.431, 610.712, 319.628, 2188547],sub:{chk:[32.9, 0.0, 0.0, 1.105, 1611],hu:[2095.376, 1155.728, 9.568, 10.321, 457787],pc:[3675.359, 434.997, 94.269, 2.744, 597006],pk:[6120.428, 376.407, 81.974, 36.737, 467490],pa:[1427.135, 6.482, 16.601, 6.456, 315653],pw:[493.28, 21.199, 17.126, 3.121, 143804],dci_pct:0.0}},
+  {id:'BRSP18',c:'MLB',ib:[9165.899, 1135.263, 16.473, 6.301, 2008705],ob:[43821.961, 15812.489, 1.664, 95.11, 1753263],sub:{chk:[4.593, 0.0, 0.0, 0.0, 449],hu:[2024.062, 1604.7, 0.0, 0.557, 369125],pc:[2554.618, 572.113, 0.0, 3.412, 484714],pk:[6044.072, 632.266, 0.0, 34.488, 489502],pa:[2152.049, 37.475, 3.345, 0.022, 495163],pw:[641.334, 293.581, 0.0, 0.522, 112711],dci_pct:0.0}},
+  {id:'BRSP19',c:'MLB',ib:[12787.191, 1578.237, 10.31, 38.57, 2690465],ob:[60992.536, 17632.751, 78.316, 499.353, 2634115],sub:{chk:[32.509, 0.0, 0.0, 6.9, 948],hu:[2863.833, 1993.81, 0.454, 62.823, 486756],pc:[3409.855, 638.923, 2.268, 15.833, 650514],pk:[6704.313, 2.994, 61.407, 36.556, 654980],pa:[3139.005, 30.851, 1.045, 1.664, 761829],pw:[693.198, 180.747, 0.0, 11.786, 140932],dci_pct:0.0}},
+  {id:'BRSP24',c:'MLB',ib:[1664.072, 211.771, 66.474, 13.696, 319062],ob:[7639.642, 1205.124, 134.733, 16.817, 317891],sub:{chk:[0.52, 0.0, 0.0, 0.0, 5],hu:[198.453, 3.191, 1.738, 1.755, 74535],pc:[523.488, 10.254, 7.587, 0.533, 88412],pk:[1025.313, 30.112, 20.814, 3.747, 85612],pa:[349.271, 30.889, 7.478, 1.164, 64655],pw:[66.076, 7.185, 1.498, 0.935, 15221],dci_pct:0.0}},
+  {id:'BRSP25',c:'MLB',ib:[12492.058, 1558.642, 84.594, 34.583, 2746728],ob:[49290.68, 11356.891, 255.328, 554.794, 2010037],sub:{chk:[12.522, 0.0, 0.0, 1.173, 543],hu:[1539.864, 484.024, 0.299, 54.26, 396115],pc:[2927.937, 325.877, 24.621, 28.829, 526838],pk:[5980.574, 247.354, 4.509, 49.013, 534317],pa:[2914.881, 79.814, 15.066, 4.856, 695324],pw:[500.598, 39.048, 15.226, 9.098, 135496],dci_pct:0.0}},
+  {id:'BRSP26',c:'MLB',ib:[7252.037, 732.429, 23.841, 107.869, 1575167],ob:[23771.871, 5808.73, 273.193, 456.33, 811467],sub:{chk:[5.035, 0.0, 0.0, 1.549, 86],hu:[529.657, 22.454, 0.372, 26.356, 203262],pc:[1824.093, 142.286, 9.756, 17.628, 254976],pk:[3500.653, 33.857, 24.863, 95.144, 257925],pa:[1355.315, 29.776, 1.328, 24.923, 316936],pw:[166.441, 3.666, 0.126, 9.85, 33149],dci_pct:0.0}},
+  {id:'BRSP30',c:'MLB',ib:[283.714, 45.978, 0.019, 4.036, 51769],ob:[484.13, 37.189, 0.286, 4.513, 32920],sub:{chk:[2.111, 0.0, 0.0, 1.27, 2],hu:[4.329, 0.0, 0.0, 0.0, 2396],pc:[51.71, 2.701, 0.0, 0.0, 11173],pk:[98.099, 0.0, 0.285, 0.646, 11182],pa:[90.517, 14.55, 0.0, 0.356, 15116],dci_pct:0.0}},
+  {id:'BRXES1',c:'MLB',ib:[0.049, 0.0, 0.049, 0.0, 0],ob:null,sub:{hu:[2618.357, 846.289, 199.074, 184.102, 226853],pc:[0.067, 0.067, 0.0, 0.0, 0],pk:[1.295, 0.0, 0.0, 0.0, 0],pa:[2.548, 0.19, 0.049, 0.161, 0],pw:[0.0, 0.0, 0.0, 0.0, 0],dci_pct:0}},
+  {id:'CAMPINAS',c:'MLB',ib:[0.152, 0.152, 0.0, 0.0, 0],ob:[0.224, 0.224, 0.0, 0.0, 0],sub:{chk:[162.766, 60.984, 15.064, 72.429, 0],hu:[14122.591, 9959.722, 27.427, 153.241, 1319544],dci_pct:0}},
+  {id:'CLBB01',c:'MLC',ib:[241.329, 14.514, 0.44, 0.36, 58916],ob:[1243.899, 213.706, 15.428, 0.649, 60783],sub:{hu:[41.616, 4.991, 2.5, 0.0, 15393],pc:[90.761, 3.244, 0.0, 0.0, 20345],pk:[215.948, 7.393, 0.0, 0.649, 20440],pa:[68.486, 3.255, 0.0, 0.0, 18762],st:[5.62, 0.0, 0.0, 0.0, 221],dci_pct:0}},
+  {id:'CLRM03',c:'MLC',ib:[64502.59, 13767.261, 2243.707, 328.166, 5326941],ob:[110393.842, 22529.683, 41.227, 418.624, 5043502],sub:{chk:[6391.433, 786.806, 151.081, 29.981, 1523332],dci:[542.016, 54.49, 49.072, 0.046, 336703],hu:[18638.926, 11434.14, 55.125, 108.762, 1386010],pc:[9698.814, 1306.37, 6.777, 49.248, 1528889],pk:[17263.129, 1021.293, 9.717, 38.842, 1617494],pa:[7666.613, 1083.244, 230.919, 14.009, 1451025],pw:[5609.145, 1174.072, 0.0, 10.607, 988976],st:[1905.306, 137.944, 155.092, 13.923, 26280],dci_pct:22.1}},
+  {id:'COCU02',c:'MCO',ib:[9923.078, 3224.796, 169.66, 48.333, 817817],ob:[24589.551, 7307.787, 718.593, 55.203, 760370],sub:{chk:[828.722, 191.801, 13.814, 0.294, 197214],dci:[36.081, 18.357, 0.015, 0.294, 5664],hu:[1201.013, 693.348, 15.966, 0.0, 143995],pc:[1515.276, 117.313, 53.419, 0.066, 203912],pk:[2952.478, 384.014, 107.105, 11.234, 216676],pa:[1003.381, 243.988, 21.421, 12.707, 194745],pw:[433.89, 44.004, 8.264, 0.458, 117172],st:[106.054, 0.183, 2.707, 2.455, 3092],dci_pct:2.9}},
+  {id:'MXBC01',c:'MLM',ib:[1569.397, 448.323, 24.372, 16.495, 153106],ob:[4147.017, 538.263, 63.223, 80.604, 132725],sub:{chk:[8.963, 0.0, 0.0, 1.462, 53],hu:[127.262, 19.173, 4.152, 0.723, 28935],pc:[254.861, 0.677, 1.802, 6.787, 37606],pk:[576.344, 0.108, 8.629, 40.03, 37631],pa:[353.744, 36.376, 1.081, 0.346, 43049],pw:[63.436, 0.055, 0.0, 2.504, 9925],dci_pct:0.0}},
+  {id:'MXCD02',c:'MLM',ib:[80370.116, 15596.759, 1353.733, 50.735, 10779009],ob:[208229.167, 48713.326, 904.194, 360.622, 7486580],sub:{chk:[98.154, 68.131, 0.0, 0.516, 13230],dci:[1.038, 0.0, 0.0, 0.0, 3859],hu:[7672.656, 4388.323, 0.659, 22.102, 1172734],pc:[11056.815, 1336.161, 10.157, 19.666, 1858261],pk:[23656.494, 966.643, 122.969, 23.429, 1895368],pa:[19188.648, 1528.723, 525.911, 8.131, 2808227],pw:[4278.108, 883.717, 0.0, 6.654, 927991],st:[1.948, 0.0, 0.0, 0.067, 12],dci_pct:29.2}},
+  {id:'MXCD05',c:'MLM',ib:[102513.666, 28231.676, 670.649, 6577.343, 3486612],ob:[58957.549, 21354.032, 483.502, 279.977, 933146],sub:{chk:[6479.092, 2338.73, 36.907, 275.442, 543514],dci:[4112.276, 1574.464, 17.321, 191.161, 350531],hu:[7316.477, 3171.548, 195.315, 41.585, 212762],pc:[322.264, 64.342, 0.01, 1.11, 41651],pk:[5049.544, 290.1, 39.084, 8.877, 213336],pa:[4950.291, 793.225, 0.0, 100.381, 277873],st:[324.734, 0.0, 0.0, 15.304, 2293],dci_pct:64.5}},
+  {id:'MXCD06',c:'MLM',ib:[65593.182, 16086.934, 1389.154, 408.961, 7919373],ob:[88704.381, 16185.504, 2621.746, 267.303, 3119427],sub:{chk:[4893.414, 657.153, 72.928, 8.87, 31692480],dci:[151.53, 18.682, 0.0, 1.336, 549533],hu:[2930.957, 1272.756, 127.804, 21.271, 287687],pc:[5459.821, 382.041, 407.696, 12.6, 747974],pk:[9731.438, 562.654, 494.416, 27.684, 772316],pa:[7394.231, 1190.96, 140.53, 36.547, 1550031],pw:[2039.051, 1.304, 13.465, 1.425, 513775],st:[706.159, 231.758, 8.016, 22.927, 4881],dci_pct:1.7}},
+  {id:'MXCD07',c:'MLM',ib:[9324.959, 732.167, 20.704, 24.384, 1475459],ob:[26565.052, 2639.886, 480.317, 60.28, 1085264],sub:{chk:[188.349, 0.367, 0.0, 0.726, 48671],dci:[0.002, 0.0, 0.0, 0.0, 0],hu:[502.963, 245.357, 0.511, 1.922, 190387],pc:[1203.603, 5.061, 61.983, 1.538, 282425],pk:[4643.739, 94.032, 57.149, 2.551, 286661],pa:[1935.398, 29.631, 1.537, 1.035, 344405],pw:[443.381, 52.66, 5.978, 2.216, 140999],st:[12.403, 0.0, 0.0, 0.0, 506],dci_pct:0.0}},
+  {id:'MXCD09',c:'MLM',ib:[44259.269, 8228.396, 919.123, 18.264, 6565025],ob:[193223.718, 40515.169, 6480.381, 532.769, 6602347],sub:{chk:[13.741, 0.564, 8.034, 0.0, 891],hu:[6713.277, 4800.97, 110.448, 27.469, 987972],pc:[10089.188, 1300.531, 490.065, 30.338, 1656646],pk:[27315.485, 1690.113, 1183.891, 50.958, 1711135],pa:[10971.776, 1001.136, 288.436, 5.363, 1717199],pw:[4381.855, 146.903, 308.342, 4.97, 990026],dci_pct:0.0}},
+  {id:'MXCD10',c:'MLM',ib:[40143.643, 7069.462, 439.33, 96.383, 6877053],ob:[180909.773, 37938.289, 2821.54, 355.149, 6836705],sub:{chk:[15.805, 0.0, 0.0, 3.106, 1343],hu:[4781.348, 2676.134, 90.532, 23.163, 933801],pc:[9394.386, 1240.715, 190.702, 19.902, 1677936],pk:[22582.714, 1153.631, 496.01, 48.14, 1684170],pa:[8789.745, 900.434, 9.941, 15.096, 1643963],pw:[5012.118, 858.35, 102.894, 13.913, 956462],dci_pct:0.0}},
+  {id:'MXCD11',c:'MLM',ib:[10305.395, 4087.413, 31.74, 2.666, 748023],ob:[26169.745, 9502.085, 383.051, 33.352, 561169],sub:{chk:[4.273, 1.123, 0.0, 0.0, 532],hu:[3425.849, 1849.684, 131.957, 16.269, 141950],pc:[208.539, 16.123, 15.468, 1.884, 31504],pk:[2996.564, 111.882, 10.933, 1.136, 147414],pa:[2366.611, 642.033, 3.343, 0.119, 197656],dci_pct:0.0}},
+  {id:'MXCD12',c:'MLM',ib:[10835.264, 3425.025, 2.969, 33.299, 721770],ob:[26042.815, 8334.197, 62.459, 126.417, 536711],sub:{chk:[11.636, 0.894, 0.0, 0.092, 208],dci:[1.56, 0.0, 0.0, 0.0, 0],hu:[2517.206, 987.257, 39.938, 26.071, 130351],pc:[216.847, 4.801, 0.613, 5.881, 36490],pk:[3236.056, 119.406, 12.826, 15.975, 137787],pa:[2702.389, 536.939, 1.166, 4.719, 197602],dci_pct:0.0}},
+  {id:'MXCD14',c:'MLM',ib:[21016.795, 4663.029, 139.943, 1332.297, 760121],ob:[9181.831, 3835.839, 105.203, 139.609, 108761],sub:{chk:[2140.159, 259.243, 8.33, 194.365, 343541],dci:[1565.079, 160.333, 6.976, 142.784, 274986],hu:[1028.38, 401.583, 1.298, 21.069, 30421],pc:[50.145, 0.218, 0.0, 4.819, 1960],pk:[1223.746, 306.466, 14.562, 43.82, 29630],pa:[1172.459, 534.814, 2.902, 81.228, 54373],pw:[0.438, 0.0, 0.0, 0.0, 0],st:[257.458, 0.0, 0.0, 14.154, 1191],dci_pct:80.0}},
+  {id:'MXCD20',c:'MLM',ib:[216.08, 18.126, 0.0, 0.152, 41256],ob:[538.218, 17.521, 4.491, 2.901, 36131],sub:{chk:[0.692, 0.0, 0.0, 0.152, 1],hu:[14.04, 0.111, 0.074, 0.0, 9332],pc:[58.226, 0.288, 1.978, 0.0, 10924],pk:[84.614, 0.663, 1.375, 0.0, 10889],pa:[52.86, 0.996, 0.0, 0.0, 11235],st:[0.972, 0.0, 0.0, 0.0, 32],dci_pct:0.0}},
+  {id:'MXCH02',c:'MLM',ib:[403.918, 78.113, 0.0, 305.09, 0],ob:[0.168, 0.168, 0.0, 0.0, 0],sub:{pc:[0.168, 0.168, 0.0, 0.0, 0],pa:[403.918, 78.113, 0.0, 305.09, 0],dci_pct:0}},
+  {id:'MXGT01',c:'MLM',ib:[36587.652, 10276.996, 1024.828, 201.669, 4900896],ob:[120623.572, 35156.195, 2041.259, 493.212, 3986577],sub:{chk:[27.641, 0.0, 0.0, 2.119, 1513],hu:[7754.174, 4942.391, 116.058, 41.205, 672379],pc:[5429.405, 1264.592, 169.363, 31.581, 938225],pk:[14914.13, 1235.346, 324.876, 33.977, 1051404],pa:[9291.959, 2279.093, 224.289, 58.376, 1261258],pw:[1944.43, 0.0, 1.935, 17.031, 490099],st:[29.734, 5.296, 0.003, 7.524, 270],dci_pct:0.0}},
+  {id:'MXJC01',c:'MLM',ib:[64318.62, 21427.242, 1403.775, 117.358, 7584799],ob:[122365.247, 40085.688, 4895.614, 258.058, 4538338],sub:{chk:[3129.997, 987.905, 21.515, 2.541, 650429],dci:[44.413, 0.258, 0.0, 0.072, 23227],hu:[4130.193, 2884.42, 73.888, 20.196, 644064],pc:[5442.493, 744.053, 295.496, 5.931, 1131080],pk:[14529.25, 1657.898, 923.095, 20.162, 1145982],pa:[8303.467, 1659.438, 147.289, 7.146, 1471174],pw:[3743.168, 1284.206, 201.026, 24.876, 608117],st:[606.964, 96.929, 8.977, 11.498, 5687],dci_pct:3.6}},
+  {id:'MXJC02',c:'MLM',ib:[7604.696, 2596.974, 112.109, 26.796, 555026],ob:[17760.173, 5856.541, 158.564, 39.47, 422029],sub:{chk:[18.694, 2.971, 0.0, 0.738, 800],hu:[2232.953, 1271.905, 40.116, 3.863, 108037],pc:[125.254, 2.298, 0.324, 0.111, 18919],pk:[1836.682, 7.861, 11.354, 1.955, 112323],pa:[1652.433, 376.914, 37.267, 0.901, 149460],pw:[0.586, 0.0, 0.0, 0.0, 0],st:[19.433, 0.089, 0.0, 0.0, 159],dci_pct:0.0}},
+  {id:'MXNL01',c:'MLM',ib:[35309.747, 11684.551, 698.721, 86.818, 5480230],ob:[109450.676, 39399.706, 2010.539, 423.4, 4272049],sub:{chk:[1326.752, 650.742, 16.004, 0.678, 273882],dci:[25.061, 3.94, 0.0, 0.132, 16485],hu:[5466.039, 4764.029, 24.976, 28.221, 116136],pc:[4094.592, 583.461, 90.304, 3.665, 1066530],pk:[13650.939, 1458.142, 582.59, 76.728, 1099566],pa:[7520.632, 1654.548, 269.18, 26.246, 1309022],pw:[3221.617, 1211.616, 142.911, 2.64, 606062],st:[380.981, 63.985, 0.151, 8.178, 11370],dci_pct:6.0}},
+  {id:'MXPB01',c:'MLM',ib:[923.387, 250.956, 99.51, 82.922, 46714],ob:[832.329, 205.574, 84.456, 82.332, 8099],sub:{chk:[0.332, 0.0, 0.0, 0.0, 1],hu:[140.107, 28.525, 14.417, 26.852, 6636],pc:[145.314, 29.78, 5.913, 10.275, 7983],pk:[252.884, 6.574, 3.809, 12.88, 8310],pa:[647.636, 145.547, 51.97, 52.176, 39696],pw:[44.799, 0.0, 4.431, 9.784, 1766],st:[17.912, 0.287, 0.0, 1.58, 561],dci_pct:0.0}},
+  {id:'MXRC03',c:'MLM',ib:[54934.598, 30868.359, 169.836, 787.396, 1618416],ob:[27797.922, 18114.236, 76.867, 321.003, 165444],sub:{chk:[46370.803, 9612.976, 388.906, 223.76, 9271525],dci:[93.096, 10.995, 0.0, 0.469, 23862],hu:[69.738, 2.001, 0.0, 15.854, 3830],pc:[46.356, 0.0, 0.0, 20.158, 0],pk:[64.503, 0.0, 1.641, 34.379, 0],pa:[562.007, 153.999, 0.149, 35.521, 52611],st:[8425.466, 3938.718, 37.147, 194.227, 68114],dci_pct:0.3}},
+  {id:'MXSO01',c:'MLM',ib:[824.391, 142.778, 44.734, 1.786, 104191],ob:[2744.459, 148.794, 70.316, 1.144, 109628],sub:{chk:[0.058, 0.0, 0.0, 0.0, 1],hu:[71.194, 2.982, 1.455, 0.0, 22806],pc:[167.108, 6.282, 2.983, 0.0, 28823],pk:[387.274, 4.895, 3.347, 0.0, 29175],pa:[216.663, 9.387, 14.864, 0.364, 26489],pw:[41.222, 1.17, 0.128, 0.0, 8704],dci_pct:0.0}},
+  {id:'MXXCP1',c:'MLM',ib:null,ob:[0.236, 0.0, 0.0, 0.0, 0],sub:{hu:[23.305, 17.613, 1.696, 0.0, 1454],dci_pct:0}},
+  {id:'MXXEM3',c:'MLM',ib:[0.024, 0.0, 0.0, 0.0, 0],ob:null,sub:{chk:[1.671, 1.671, 0.0, 0.0, 0],hu:[18692.284, 11796.713, 149.064, 1107.689, 1370192],pa:[43.238, 0.0, 0.0, 40.513, 0],dci_pct:0}},
+  {id:'MXYU01',c:'MLM',ib:[14350.261, 4443.196, 331.428, 9.575, 1914618],ob:[47787.567, 10830.234, 857.36, 75.732, 1737470],sub:{chk:[89.363, 1.662, 0.629, 0.0, 20806],dci:[2.252, 0.0, 0.0, 0.0, 782],hu:[2188.449, 873.674, 22.0, 1.002, 294406],pc:[1980.646, 379.703, 33.764, 0.0, 397001],pk:[6433.999, 655.847, 154.658, 20.019, 446330],pa:[3507.587, 925.123, 77.089, 1.587, 538261],pw:[779.747, 24.896, 28.104, 0.564, 192673],st:[53.716, 0.0, 0.0, 1.126, 611],dci_pct:3.8}},
+  {id:'PELI01',c:'MPE',ib:[114.802, 7.719, 16.576, 0.278, 8893],ob:[405.285, 68.065, 79.147, 0.159, 9829],sub:{chk:[3.576, 0.0, 0.461, 0.0, 1345],hu:[14.534, 1.093, 6.927, 0.0, 1534],pc:[28.804, 0.895, 8.44, 0.0, 1880],pk:[27.139, 5.079, 2.403, 0.0, 1882],pa:[5.819, 0.823, 0.504, 0.0, 1342],st:[1.779, 0.0, 0.389, 0.0, 17],dci_pct:0.0}},
+  {id:'SSP22',c:'MLB',ib:null,ob:[0.229, 0.229, 0.0, 0.0, 0],sub:{hu:[815.084, 0.0, 0.0, 145.499, 91667],pc:[3.497, 0.0, 0.0, 2.996, 0],pw:[0.0, 0.0, 0.0, 0.0, 0],dci_pct:0}},
+  {id:'USTX01',c:'MLM',ib:[1966.129, 108.323, 79.276, 103.502, 232064],ob:[4220.813, 96.131, 152.362, 83.925, 192486],sub:{chk:[219.159, 4.275, 6.753, 4.961, 52166],dci:[10.666, 1.861, 0.0, 3.37, 7555],hu:[157.963, 0.0, 0.092, 4.439, 38595],pc:[342.081, 0.0, 11.001, 1.396, 50951],pk:[575.014, 0.0, 21.456, 20.651, 50919],pa:[259.821, 2.299, 3.191, 22.041, 52921],dci_pct:14.5}},
+  {id:'XSP4',c:'MLB',ib:null,ob:[0.026, 0.0, 0.0, 0.0, 0],sub:{hu:[4273.092, 39.47, 55.358, 1456.285, 658592],dci_pct:0}}
+];
+
+const RAW_WEEKLY = {
+  W16: [
+  {id:'ARBA01',c:'MLA',ib:[29202.316, 8175.873, 8.221, 108.447, 2238031],ob:[49146.563, 17070.113, 3.489, 137.178, 1913284]},
+  {id:'ARBA02',c:'MLA',ib:[837.437, 475.471, 0.0, 19.756, 32438],ob:[1044.949, 313.713, 0.0, 23.327, 31059]},
+  {id:'ARBA04',c:'MLA',ib:[2677.945, 1669.856, 0.0, 25.32, 58690],ob:[4684.458, 2399.103, 0.389, 65.198, 47623]},
+  {id:'ARENA',c:'MLB',ib:null,ob:[0.108, 0.108, 0.0, 0.0, 0]},
+  {id:'ARTW01',c:'MLA',ib:null,ob:[0.989, 0.0, 0.0, 0.0, 0]},
+  {id:'BRBA01',c:'MLB',ib:[10762.882, 2151.17, 69.273, 97.014, 1443982],ob:[40915.861, 8962.798, 363.266, 402.165, 1396010]},
+  {id:'BRBA02',c:'MLB',ib:[2593.421, 954.748, 0.0, 27.658, 123064],ob:[6761.367, 2056.692, 57.246, 72.603, 117324]},
+  {id:'BRDF01',c:'MLB',ib:[609.179, 116.239, 34.391, 2.199, 86515],ob:[2358.469, 344.651, 110.684, 26.222, 86504]},
+  {id:'BRMG01',c:'MLB',ib:[9936.551, 4390.936, 37.318, 9.378, 893815],ob:[19210.506, 7001.343, 132.852, 22.722, 624031]},
+  {id:'BRMG02',c:'MLB',ib:[13965.875, 6193.096, 57.693, 174.794, 904379],ob:[23124.44, 6272.968, 14.909, 487.464, 617747]},
+  {id:'BRMG03',c:'MLB',ib:[4011.788, 3008.92, 15.818, 26.291, 143952],ob:[7017.502, 2639.834, 30.324, 42.555, 111836]},
+  {id:'BRMG04',c:'MLB',ib:[274.983, 233.801, 0.0, 2.622, 2713],ob:[139.596, 83.197, 0.0, 0.0, 2680]},
+  {id:'BRPE01',c:'MLB',ib:[5216.911, 1599.047, 3.13, 29.102, 857366],ob:[19582.727, 5287.734, 24.126, 61.258, 752103]},
+  {id:'BRPR01',c:'MLB',ib:[3009.24, 695.378, 37.218, 11.059, 468619],ob:[9254.792, 1685.333, 94.192, 37.886, 467987]},
+  {id:'BRRC01',c:'MLB',ib:[13259.96, 5877.998, 19.031, 998.71, 561468],ob:[5547.256, 2032.223, 4.641, 313.258, 34629]},
+  {id:'BRRC02',c:'MLB',ib:[5421.991, 2231.0, 20.457, 249.181, 255702],ob:[2244.86, 893.587, 3.978, 80.401, 12641]},
+  {id:'BRRC03',c:'MLB',ib:[7019.861, 4593.878, 21.884, 250.79, 159455],ob:[4144.99, 2100.547, 11.159, 119.254, 15816]},
+  {id:'BRRJ02',c:'MLB',ib:[5753.193, 1489.315, 144.887, 22.072, 824821],ob:[18882.68, 4902.646, 528.926, 67.814, 837064]},
+  {id:'BRRS01',c:'MLB',ib:[495.067, 112.053, 5.044, 0.639, 83256],ob:[1852.476, 328.031, 15.882, 2.146, 80745]},
+  {id:'BRSC02',c:'MLB',ib:[28624.571, 6218.372, 350.299, 398.316, 2956614],ob:[66250.63, 21042.82, 1453.767, 677.942, 2052087]},
+  {id:'BRSP02',c:'MLB',ib:[15551.576, 3850.45, 20.015, 88.398, 2931489],ob:[69789.046, 16356.114, 6.294, 876.232, 2570245]},
+  {id:'BRSP04',c:'MLB',ib:[14348.316, 2325.042, 65.749, 181.235, 2989417],ob:[55776.809, 17446.895, 159.949, 167.996, 2286016]},
+  {id:'BRSP06',c:'MLB',ib:[30753.179, 13765.823, 384.615, 722.257, 2834986],ob:[79286.958, 24278.568, 1559.096, 1270.543, 2211218]},
+  {id:'BRSP09',c:'MLB',ib:[342.999, 204.713, 0.0, 0.0, 11352],ob:[713.238, 170.329, 3.599, 2.576, 13581]},
+  {id:'BRSP10',c:'MLB',ib:[15169.743, 7783.123, 12.9, 167.534, 528144],ob:[16610.89, 5066.823, 340.868, 133.234, 352510]},
+  {id:'BRSP11',c:'MLB',ib:[15392.511, 9698.101, 0.0, 50.284, 450905],ob:[19921.506, 7334.487, 0.54, 44.639, 342759]},
+  {id:'BRSP14',c:'MLB',ib:[3733.77, 538.747, 0.0, 30.974, 763753],ob:[15994.012, 5036.897, 1.114, 133.854, 664180]},
+  {id:'BRSP15',c:'MLB',ib:[2706.388, 357.741, 27.821, 37.822, 589045],ob:[12955.371, 3867.798, 53.838, 59.67, 541010]},
+  {id:'BRSP18',c:'MLB',ib:[2144.724, 250.811, 4.904, 1.262, 502876],ob:[10200.528, 3752.276, 0.402, 14.483, 427423]},
+  {id:'BRSP19',c:'MLB',ib:[3030.105, 341.088, 3.238, 11.515, 643475],ob:[16869.254, 4557.06, 8.176, 96.908, 738566]},
+  {id:'BRSP24',c:'MLB',ib:[406.752, 62.03, 21.769, 9.446, 82050],ob:[1970.893, 317.449, 41.698, 4.968, 81803]},
+  {id:'BRSP25',c:'MLB',ib:[3116.04, 388.009, 12.59, 3.117, 708937],ob:[12333.286, 2812.333, 58.416, 149.309, 512625]},
+  {id:'BRSP26',c:'MLB',ib:[2524.654, 256.083, 4.37, 19.928, 561685],ob:[5003.315, 1465.483, 102.161, 120.462, 162432]},
+  {id:'BRSP30',c:'MLB',ib:[35.041, 5.731, 0.0, 0.019, 8304],ob:[87.556, 10.403, 0.0, 0.0, 5976]},
+  {id:'CLBB01',c:'MLC',ib:[58.568, 3.294, 0.0, 0.36, 13951],ob:[298.562, 57.028, 4.385, 0.0, 14188]},
+  {id:'CLRM03',c:'MLC',ib:[16493.372, 3603.236, 693.669, 78.663, 1363273],ob:[25486.93, 5449.993, 11.355, 156.73, 1191362]},
+  {id:'COCU02',c:'MCO',ib:[2471.412, 810.845, 34.672, 9.839, 202194],ob:[5901.745, 1801.039, 147.754, 8.411, 182230]},
+  {id:'MXBC01',c:'MLM',ib:[364.476, 132.612, 12.246, 4.131, 25286],ob:[1130.935, 191.441, 28.814, 12.601, 31792]},
+  {id:'MXCD02',c:'MLM',ib:[17343.949, 3628.634, 114.837, 14.201, 2332199],ob:[51736.558, 12112.935, 224.535, 64.117, 1849029]},
+  {id:'MXCD05',c:'MLM',ib:[27001.427, 7854.976, 129.639, 1590.146, 889015],ob:[14722.134, 5225.636, 61.661, 60.593, 234007]},
+  {id:'MXCD06',c:'MLM',ib:[14498.978, 3155.519, 352.614, 83.67, 1644287],ob:[22595.278, 4344.831, 462.138, 54.859, 812073]},
+  {id:'MXCD07',c:'MLM',ib:[1963.205, 192.038, 4.475, 7.024, 330793],ob:[6273.69, 665.578, 142.19, 18.082, 259725]},
+  {id:'MXCD09',c:'MLM',ib:[10497.132, 1947.822, 265.405, 5.688, 1509611],ob:[43116.314, 9156.033, 1183.814, 142.962, 1529781]},
+  {id:'MXCD10',c:'MLM',ib:[11068.734, 1993.474, 218.815, 25.11, 1858655],ob:[43174.111, 8702.715, 510.387, 67.259, 1718938]},
+  {id:'MXCD11',c:'MLM',ib:[2167.237, 851.251, 11.856, 1.048, 169090],ob:[5849.128, 2137.252, 90.481, 1.927, 127650]},
+  {id:'MXCD12',c:'MLM',ib:[2194.633, 741.44, 1.699, 0.921, 154843],ob:[5627.184, 1768.341, 2.12, 13.968, 120162]},
+  {id:'MXCD14',c:'MLM',ib:[2033.796, 614.604, 30.019, 55.753, 82881],ob:[2194.028, 1053.57, 17.057, 10.622, 25636]},
+  {id:'MXCD20',c:'MLM',ib:[58.544, 8.839, 0.0, 0.0, 10514],ob:[125.039, 6.415, 0.0, 0.0, 8261]},
+  {id:'MXGT01',c:'MLM',ib:[8598.939, 2502.197, 179.256, 16.228, 1240110],ob:[28662.292, 8513.296, 293.472, 84.188, 967854]},
+  {id:'MXJC01',c:'MLM',ib:[15175.845, 4844.408, 465.313, 26.585, 1787274],ob:[30706.289, 10145.204, 810.488, 59.729, 1205360]},
+  {id:'MXJC02',c:'MLM',ib:[1678.347, 573.694, 50.637, 5.605, 126686],ob:[4315.574, 1450.224, 42.36, 19.142, 99928]},
+  {id:'MXNL01',c:'MLM',ib:[7343.859, 2570.83, 41.946, 7.671, 1210018],ob:[27253.081, 9513.857, 256.421, 121.2, 1096920]},
+  {id:'MXRC03',c:'MLM',ib:[12308.426, 6782.659, 26.954, 150.703, 402656],ob:[6013.864, 3925.904, 11.081, 59.411, 36815]},
+  {id:'MXSO01',c:'MLM',ib:[186.181, 37.174, 8.487, 0.174, 23883],ob:[740.067, 37.271, 17.03, 0.346, 29177]},
+  {id:'MXXCP1',c:'MLM',ib:null,ob:[0.105, 0.0, 0.0, 0.0, 0]},
+  {id:'MXYU01',c:'MLM',ib:[3191.026, 996.4, 58.636, 1.816, 432641],ob:[11813.925, 2690.98, 151.689, 24.267, 442404]},
+  {id:'PELI01',c:'MPE',ib:[63.604, 3.379, 12.101, 0.097, 4476],ob:[80.668, 20.789, 15.539, 0.0, 1561]},
+  {id:'USTX01',c:'MLM',ib:[579.861, 59.939, 17.664, 25.3, 80463],ob:[881.649, 35.59, 24.003, 24.396, 36997]}
+],
+  W17: [
+  {id:'ARBA01',c:'MLA',ib:[33511.117, 9539.309, 7.321, 109.839, 2666100],ob:[46816.397, 16058.251, 3.307, 107.123, 1824944]},
+  {id:'ARBA02',c:'MLA',ib:[751.344, 426.85, 0.0, 12.182, 35934],ob:[877.708, 284.371, 0.0, 20.861, 25466]},
+  {id:'ARBA04',c:'MLA',ib:[4024.22, 2431.569, 0.0, 26.129, 87450],ob:[4839.376, 2459.818, 0.0, 46.624, 49913]},
+  {id:'ARENA',c:'MLB',ib:null,ob:[0.026, 0.026, 0.0, 0.0, 0]},
+  {id:'ARTW01',c:'MLA',ib:null,ob:[8.918, 0.0, 0.0, 7.64, 0]},
+  {id:'BRBA01',c:'MLB',ib:[9472.826, 1942.603, 17.36, 32.01, 1324297],ob:[38782.338, 9448.149, 236.582, 282.244, 1339345]},
+  {id:'BRBA02',c:'MLB',ib:[2241.771, 828.695, 0.0, 13.567, 101690],ob:[5878.348, 1813.211, 37.911, 47.111, 105479]},
+  {id:'BRDF01',c:'MLB',ib:[622.023, 115.121, 26.948, 5.261, 81121],ob:[2304.744, 374.58, 120.43, 18.319, 76478]},
+  {id:'BRES01',c:'MLB',ib:[376.09, 84.657, 0.0, 237.924, 2377],ob:[1.703, 0.0, 0.0, 0.115, 2]},
+  {id:'BRMG01',c:'MLB',ib:[9486.169, 4409.024, 23.396, 5.286, 707968],ob:[18540.506, 6924.883, 161.913, 15.29, 578433]},
+  {id:'BRMG02',c:'MLB',ib:[15851.797, 7007.189, 76.303, 203.874, 954718],ob:[23238.629, 6530.239, 18.344, 585.579, 606323]},
+  {id:'BRMG03',c:'MLB',ib:[3633.66, 2873.627, 1.218, 4.549, 128777],ob:[7334.827, 2808.598, 26.604, 33.423, 116160]},
+  {id:'BRMG04',c:'MLB',ib:[250.461, 210.881, 0.0, 2.248, 2693],ob:[113.571, 52.589, 3.812, 0.641, 1629]},
+  {id:'BRPE01',c:'MLB',ib:[4691.051, 1488.476, 46.295, 16.414, 723301],ob:[19100.058, 5387.05, 108.208, 95.839, 700485]},
+  {id:'BRPR01',c:'MLB',ib:[2373.259, 595.076, 18.441, 6.344, 362886],ob:[9312.254, 1732.2, 87.019, 21.922, 470943]},
+  {id:'BRRC01',c:'MLB',ib:[11833.551, 5551.872, 73.004, 695.111, 487311],ob:[4556.845, 1713.634, 7.053, 274.725, 28665]},
+  {id:'BRRC02',c:'MLB',ib:[4544.602, 1638.55, 5.712, 262.074, 217332],ob:[2227.084, 868.785, 2.988, 99.559, 12174]},
+  {id:'BRRC03',c:'MLB',ib:[6780.553, 4805.005, 19.31, 241.767, 110961],ob:[4923.658, 3110.801, 5.558, 268.127, 19140]},
+  {id:'BRRJ02',c:'MLB',ib:[5522.896, 1398.984, 159.339, 16.838, 768742],ob:[17986.614, 4781.368, 822.03, 60.674, 745966]},
+  {id:'BRRS01',c:'MLB',ib:[496.988, 106.538, 5.81, 0.396, 77493],ob:[1798.125, 310.491, 6.62, 8.529, 76230]},
+  {id:'BRSC02',c:'MLB',ib:[27727.948, 6033.823, 271.767, 399.058, 2857861],ob:[66240.688, 20777.404, 1297.322, 675.411, 2012406]},
+  {id:'BRSP02',c:'MLB',ib:[16036.877, 3973.441, 5.789, 97.94, 3062629],ob:[70343.208, 15832.948, 9.52, 1060.074, 2503096]},
+  {id:'BRSP04',c:'MLB',ib:[12660.005, 1927.163, 41.284, 263.995, 2682670],ob:[56968.967, 17482.55, 278.531, 236.555, 2270393]},
+  {id:'BRSP06',c:'MLB',ib:[30079.12, 13480.134, 1362.7, 1002.198, 2530381],ob:[73234.466, 23362.168, 1227.972, 1652.154, 1979362]},
+  {id:'BRSP09',c:'MLB',ib:[289.661, 154.562, 0.0, 0.12, 11411],ob:[569.675, 131.351, 2.476, 0.916, 10990]},
+  {id:'BRSP10',c:'MLB',ib:[15611.061, 8046.538, 6.201, 188.949, 505294],ob:[17087.842, 5493.068, 714.899, 194.317, 343176]},
+  {id:'BRSP11',c:'MLB',ib:[17321.958, 11807.194, 0.0, 50.424, 425692],ob:[19100.23, 7825.833, 0.0, 55.654, 317630]},
+  {id:'BRSP14',c:'MLB',ib:[3420.864, 517.277, 0.0, 24.211, 711914],ob:[15117.651, 4948.178, 0.0, 84.538, 634137]},
+  {id:'BRSP15',c:'MLB',ib:[2862.54, 400.603, 73.353, 21.283, 573934],ob:[13393.436, 3887.739, 133.868, 92.673, 522320]},
+  {id:'BRSP18',c:'MLB',ib:[2338.984, 287.096, 5.503, 0.188, 514058],ob:[10273.394, 3716.182, 1.044, 17.478, 432447]},
+  {id:'BRSP19',c:'MLB',ib:[2746.851, 356.029, 4.557, 7.689, 585775],ob:[14843.359, 4249.312, 4.847, 96.654, 649332]},
+  {id:'BRSP24',c:'MLB',ib:[454.179, 60.501, 20.2, 1.979, 86890],ob:[1848.601, 283.664, 35.789, 3.455, 74101]},
+  {id:'BRSP25',c:'MLB',ib:[3214.918, 421.561, 7.861, 9.769, 721535],ob:[11437.446, 2640.627, 50.715, 78.442, 484185]},
+  {id:'BRSP26',c:'MLB',ib:[1738.536, 205.511, 16.529, 29.304, 381690],ob:[4913.344, 1259.77, 35.884, 63.011, 173679]},
+  {id:'BRSP30',c:'MLB',ib:[60.842, 6.591, 0.019, 1.803, 12068],ob:[120.353, 11.291, 0.0, 3.516, 7779]},
+  {id:'CLBB01',c:'MLC',ib:[63.148, 5.024, 0.44, 0.0, 13687],ob:[308.969, 62.439, 5.828, 0.0, 13390]},
+  {id:'CLRM03',c:'MLC',ib:[17010.436, 3611.223, 585.264, 105.247, 1403750],ob:[26568.929, 5614.953, 7.847, 123.948, 1198219]},
+  {id:'COCU02',c:'MCO',ib:[2630.343, 838.657, 39.364, 15.525, 218823],ob:[5647.988, 1689.218, 179.967, 5.568, 172545]},
+  {id:'MXBC01',c:'MLM',ib:[361.023, 116.858, 6.827, 6.131, 38832],ob:[983.341, 154.888, 7.822, 10.967, 31157]},
+  {id:'MXCD02',c:'MLM',ib:[19072.779, 3758.88, 196.897, 13.117, 2676853],ob:[53157.613, 12390.123, 331.625, 124.547, 1911414]},
+  {id:'MXCD05',c:'MLM',ib:[28449.895, 7658.808, 238.266, 1944.618, 955682],ob:[14633.036, 5555.097, 40.556, 46.737, 239764]},
+  {id:'MXCD06',c:'MLM',ib:[16690.648, 3602.189, 501.554, 143.97, 1899944],ob:[22398.126, 4111.046, 519.368, 72.0, 791203]},
+  {id:'MXCD07',c:'MLM',ib:[2299.303, 157.391, 2.757, 8.208, 381609],ob:[6309.5, 570.454, 87.167, 19.317, 266906]},
+  {id:'MXCD09',c:'MLM',ib:[11585.116, 2201.266, 182.065, 3.792, 1796720],ob:[46765.617, 9618.561, 1290.223, 140.824, 1663047]},
+  {id:'MXCD10',c:'MLM',ib:[10256.666, 1794.226, 164.412, 20.543, 1746380],ob:[46173.013, 9312.884, 640.653, 69.498, 1795404]},
+  {id:'MXCD11',c:'MLM',ib:[2556.595, 1010.323, 5.752, 0.608, 192802],ob:[6066.828, 2317.403, 52.484, 4.885, 135650]},
+  {id:'MXCD12',c:'MLM',ib:[2522.005, 830.939, 0.0, 12.399, 174141],ob:[6295.413, 2014.02, 4.216, 37.964, 134728]},
+  {id:'MXCD14',c:'MLM',ib:[4081.075, 886.761, 47.328, 161.717, 154477],ob:[2154.629, 1006.526, 26.362, 24.362, 25277]},
+  {id:'MXCD20',c:'MLM',ib:[45.651, 0.839, 0.0, 0.0, 9260],ob:[128.557, 3.048, 1.065, 0.777, 8512]},
+  {id:'MXGT01',c:'MLM',ib:[9125.206, 2386.575, 269.104, 56.464, 1303011],ob:[29090.621, 8531.155, 448.674, 83.336, 985944]},
+  {id:'MXJC01',c:'MLM',ib:[14907.987, 5018.376, 319.283, 27.099, 1795433],ob:[30433.921, 10250.778, 1240.967, 46.46, 1138963]},
+  {id:'MXJC02',c:'MLM',ib:[1804.044, 644.951, 8.88, 7.81, 128944],ob:[4395.635, 1497.931, 31.555, 10.57, 102983]},
+  {id:'MXNL01',c:'MLM',ib:[7719.668, 2707.164, 118.119, 13.188, 1245069],ob:[26767.132, 9817.131, 374.125, 96.062, 1059679]},
+  {id:'MXRC03',c:'MLM',ib:[13840.503, 7515.661, 40.177, 212.754, 424711],ob:[6830.684, 4475.888, 18.8, 66.85, 41351]},
+  {id:'MXSO01',c:'MLM',ib:[178.701, 34.529, 5.809, 0.068, 24263],ob:[702.283, 53.227, 18.106, 0.322, 26963]},
+  {id:'MXXCP1',c:'MLM',ib:null,ob:[0.131, 0.0, 0.0, 0.0, 0]},
+  {id:'MXXEM3',c:'MLM',ib:[0.015, 0.0, 0.0, 0.0, 0],ob:null},
+  {id:'MXYU01',c:'MLM',ib:[3477.449, 1070.748, 89.116, 2.036, 470056],ob:[11815.64, 2734.003, 239.696, 15.488, 428004]},
+  {id:'PELI01',c:'MPE',ib:[18.463, 1.767, 1.481, 0.0, 1482],ob:[168.319, 16.677, 26.746, 0.159, 4929]},
+  {id:'USTX01',c:'MLM',ib:[446.569, 21.204, 26.47, 18.653, 49114],ob:[1137.711, 10.21, 45.539, 17.386, 51577]}
+],
+  W18: [
+  {id:'ARBA01',c:'MLA',ib:[29743.18, 7785.575, 12.544, 132.163, 2249788],ob:[42480.827, 14307.329, 6.209, 108.945, 1707030]},
+  {id:'ARBA02',c:'MLA',ib:[546.093, 319.719, 0.0, 3.857, 22801],ob:[755.111, 198.188, 0.0, 5.299, 22315]},
+  {id:'ARBA04',c:'MLA',ib:[3424.783, 2108.066, 0.0, 18.55, 84924],ob:[4554.057, 2186.199, 2.031, 35.951, 46263]},
+  {id:'ARENA',c:'MLB',ib:null,ob:[0.169, 0.169, 0.0, 0.0, 0]},
+  {id:'BRBA01',c:'MLB',ib:[8716.848, 1653.159, 6.709, 35.947, 1241223],ob:[38041.103, 9079.414, 437.53, 248.484, 1279366]},
+  {id:'BRBA02',c:'MLB',ib:[2309.607, 845.031, 0.0, 3.535, 113168],ob:[5863.382, 1811.13, 4.903, 35.131, 105905]},
+  {id:'BRDF01',c:'MLB',ib:[691.313, 144.696, 31.872, 2.439, 86618],ob:[2265.797, 370.322, 59.224, 2.292, 85092]},
+  {id:'BRES01',c:'MLB',ib:[722.977, 12.977, 81.772, 301.99, 30237],ob:[315.361, 7.227, 8.043, 133.932, 1242]},
+  {id:'BRMG01',c:'MLB',ib:[9855.896, 4810.021, 28.795, 3.001, 876670],ob:[20037.313, 7281.542, 151.561, 89.258, 609197]},
+  {id:'BRMG02',c:'MLB',ib:[15479.212, 6298.252, 117.492, 210.618, 1086437],ob:[23272.127, 6583.687, 35.389, 550.086, 596081]},
+  {id:'BRMG03',c:'MLB',ib:[3735.811, 2961.608, 2.292, 0.323, 159550],ob:[5816.9, 2139.827, 21.349, 8.199, 95726]},
+  {id:'BRMG04',c:'MLB',ib:[181.681, 127.954, 0.0, 0.144, 4930],ob:[143.867, 40.804, 4.846, 0.115, 2062]},
+  {id:'BRPE01',c:'MLB',ib:[4637.286, 1445.302, 19.41, 23.079, 698293],ob:[18580.583, 5348.932, 29.806, 66.776, 703778]},
+  {id:'BRPR01',c:'MLB',ib:[2906.044, 596.216, 125.882, 9.393, 447031],ob:[10217.188, 1763.007, 294.573, 92.901, 487243]},
+  {id:'BRRC01',c:'MLB',ib:[11540.549, 5199.09, 18.084, 670.065, 529226],ob:[4299.715, 1715.24, 10.727, 341.296, 29564]},
+  {id:'BRRC02',c:'MLB',ib:[4770.375, 1769.915, 16.316, 223.331, 232944],ob:[2478.552, 1017.209, 5.766, 101.677, 12636]},
+  {id:'BRRC03',c:'MLB',ib:[7803.069, 5849.494, 8.096, 397.655, 96202],ob:[4948.177, 3212.206, 11.111, 193.296, 21177]},
+  {id:'BRRJ02',c:'MLB',ib:[5911.437, 1513.596, 144.153, 23.692, 837736],ob:[17213.04, 4759.517, 573.556, 85.111, 733506]},
+  {id:'BRRS01',c:'MLB',ib:[564.305, 117.882, 4.538, 2.365, 89882],ob:[1676.684, 246.156, 19.204, 7.632, 74901]},
+  {id:'BRSC02',c:'MLB',ib:[27606.854, 6193.64, 232.17, 392.884, 2717696],ob:[66697.303, 20759.067, 1211.572, 819.696, 2013206]},
+  {id:'BRSP02',c:'MLB',ib:[15109.304, 3611.402, 6.282, 51.047, 2888063],ob:[70011.808, 15730.103, 17.466, 1047.866, 2413608]},
+  {id:'BRSP04',c:'MLB',ib:[13562.036, 2205.339, 4.68, 153.862, 2858111],ob:[57038.004, 16868.738, 255.183, 319.517, 2225862]},
+  {id:'BRSP06',c:'MLB',ib:[31626.787, 12957.97, 220.885, 968.435, 2848835],ob:[78535.158, 24987.97, 1313.48, 1334.416, 2125706]},
+  {id:'BRSP09',c:'MLB',ib:[292.552, 149.571, 0.0, 0.118, 12102],ob:[557.599, 146.675, 0.699, 1.632, 10968]},
+  {id:'BRSP10',c:'MLB',ib:[15477.972, 7621.936, 11.551, 284.427, 529244],ob:[17236.807, 5700.543, 777.791, 141.899, 328012]},
+  {id:'BRSP11',c:'MLB',ib:[17350.623, 11517.228, 0.748, 58.253, 444069],ob:[19512.11, 7826.512, 0.183, 33.514, 323982]},
+  {id:'BRSP14',c:'MLB',ib:[3551.95, 489.718, 0.0, 39.801, 684850],ob:[16624.589, 5362.652, 0.264, 136.475, 645489]},
+  {id:'BRSP15',c:'MLB',ib:[2374.324, 332.113, 28.353, 13.388, 485030],ob:[13805.5, 3893.372, 187.656, 92.699, 530470]},
+  {id:'BRSP18',c:'MLB',ib:[2264.04, 309.921, 2.298, 1.949, 496608],ob:[10673.624, 3938.642, 0.217, 23.523, 409350]},
+  {id:'BRSP19',c:'MLB',ib:[3418.641, 445.463, 1.47, 7.9, 699386],ob:[13670.018, 4212.532, 1.164, 141.801, 597019]},
+  {id:'BRSP24',c:'MLB',ib:[430.788, 38.387, 17.028, 0.96, 85467],ob:[1714.844, 274.494, 23.536, 1.424, 73981]},
+  {id:'BRSP25',c:'MLB',ib:[2925.631, 384.18, 48.302, 9.246, 620932],ob:[12401.944, 2767.152, 101.542, 169.774, 483848]},
+  {id:'BRSP26',c:'MLB',ib:[1503.504, 130.845, 1.615, 28.741, 314856],ob:[6415.509, 1525.139, 88.243, 118.851, 221356]},
+  {id:'BRSP30',c:'MLB',ib:[81.819, 7.565, 0.0, 0.625, 16281],ob:[115.502, 6.723, 0.0, 0.351, 8037]},
+  {id:'CLBB01',c:'MLC',ib:[50.348, 2.941, 0.0, 0.0, 12516],ob:[245.213, 39.388, 1.596, 0.0, 12890]},
+  {id:'CLRM03',c:'MLC',ib:[12732.075, 2601.075, 334.346, 79.508, 1108893],ob:[22375.602, 4571.708, 5.532, 39.249, 1057869]},
+  {id:'COCU02',c:'MCO',ib:[2491.759, 823.31, 57.61, 7.287, 202055],ob:[6176.059, 1871.142, 178.821, 25.973, 187880]},
+  {id:'MXBC01',c:'MLM',ib:[400.014, 89.246, 4.219, 1.655, 45939],ob:[933.276, 108.229, 12.004, 6.992, 32347]},
+  {id:'MXCD02',c:'MLM',ib:[22334.32, 4372.73, 491.185, 13.385, 2961730],ob:[51949.35, 12190.347, 214.249, 97.379, 1850483]},
+  {id:'MXCD05',c:'MLM',ib:[25597.629, 7011.939, 190.148, 1691.087, 870948],ob:[15214.365, 5611.53, 122.66, 98.852, 244852]},
+  {id:'MXCD06',c:'MLM',ib:[16999.753, 4605.75, 276.983, 101.933, 2298682],ob:[21645.076, 3837.51, 592.247, 68.968, 757400]},
+  {id:'MXCD07',c:'MLM',ib:[2796.901, 239.862, 7.668, 6.043, 418652],ob:[6890.664, 763.306, 121.842, 10.52, 272380]},
+  {id:'MXCD09',c:'MLM',ib:[10060.681, 1997.197, 159.718, 0.768, 1541495],ob:[51452.885, 10643.806, 1864.409, 126.764, 1716115]},
+  {id:'MXCD10',c:'MLM',ib:[9205.757, 1620.702, 46.161, 25.41, 1628055],ob:[45298.486, 9627.678, 775.147, 108.578, 1649242]},
+  {id:'MXCD11',c:'MLM',ib:[2621.426, 1021.427, 10.571, 0.112, 188475],ob:[6929.467, 2512.16, 78.547, 7.124, 148343]},
+  {id:'MXCD12',c:'MLM',ib:[2922.845, 928.546, 0.103, 13.913, 195184],ob:[6993.895, 2349.959, 0.0, 25.832, 141181]},
+  {id:'MXCD14',c:'MLM',ib:[5435.283, 968.109, 11.43, 371.499, 209865],ob:[2239.696, 857.292, 45.923, 28.708, 27926]},
+  {id:'MXCD20',c:'MLM',ib:[52.734, 4.602, 0.0, 0.0, 10247],ob:[123.216, 4.244, 0.0, 2.124, 8461]},
+  {id:'MXGT01',c:'MLM',ib:[8599.236, 2369.938, 350.233, 55.875, 1096517],ob:[30509.234, 8794.741, 624.314, 113.56, 990705]},
+  {id:'MXJC01',c:'MLM',ib:[17163.229, 5965.202, 369.236, 28.52, 2058141],ob:[29565.524, 9746.882, 1339.266, 74.291, 1063137]},
+  {id:'MXJC02',c:'MLM',ib:[2052.232, 728.859, 14.043, 1.059, 149936],ob:[4275.627, 1333.711, 22.818, 2.712, 106317]},
+  {id:'MXNL01',c:'MLM',ib:[9492.384, 2998.327, 249.127, 30.371, 1508489],ob:[26599.874, 9853.909, 525.308, 89.351, 1022184]},
+  {id:'MXPB01',c:'MLM',ib:[198.029, 59.87, 46.535, 25.186, 7018],ob:[165.148, 82.937, 48.9, 15.923, 156]},
+  {id:'MXRC03',c:'MLM',ib:[13822.504, 8037.339, 46.524, 195.578, 360875],ob:[7372.356, 4857.426, 13.424, 94.505, 41629]},
+  {id:'MXSO01',c:'MLM',ib:[214.542, 36.568, 15.469, 1.179, 29556],ob:[611.522, 25.757, 22.866, 0.476, 24766]},
+  {id:'MXYU01',c:'MLM',ib:[3660.758, 1146.559, 104.876, 3.012, 473660],ob:[11855.056, 2673.612, 223.452, 13.821, 422190]},
+  {id:'PELI01',c:'MPE',ib:[17.738, 0.923, 1.119, 0.18, 1593],ob:[66.228, 12.094, 14.205, 0.0, 1461]},
+  {id:'USTX01',c:'MLM',ib:[419.509, 4.161, 21.533, 27.601, 49566],ob:[1091.042, 32.782, 46.337, 9.59, 52425]},
+  {id:'XSP4',c:'MLB',ib:null,ob:[0.026, 0.0, 0.0, 0.0, 0]}
+],
+  W19: [
+  {id:'ARBA01',c:'MLA',ib:[39958.081, 10374.285, 16.754, 178.361, 2801348],ob:[58911.739, 20240.768, 5.407, 86.058, 2295246]},
+  {id:'ARBA02',c:'MLA',ib:[810.797, 477.64, 0.0, 12.44, 29709],ob:[818.843, 204.382, 0.0, 22.886, 25398]},
+  {id:'ARBA04',c:'MLA',ib:[5597.897, 3313.804, 0.0, 99.034, 114247],ob:[5068.416, 2231.903, 0.68, 81.67, 53752]},
+  {id:'ARENA',c:'MLB',ib:null,ob:[0.189, 0.189, 0.0, 0.0, 0]},
+  {id:'BRBA01',c:'MLB',ib:[10010.122, 1886.478, 0.048, 47.171, 1416411],ob:[43608.841, 9933.471, 568.849, 557.686, 1399873]},
+  {id:'BRBA02',c:'MLB',ib:[1928.177, 718.481, 2.152, 7.804, 95390],ob:[6313.745, 1944.699, 13.953, 47.178, 118190]},
+  {id:'BRDF01',c:'MLB',ib:[525.159, 121.158, 23.684, 2.157, 73956],ob:[2505.063, 401.092, 78.203, 11.111, 96700]},
+  {id:'BRES01',c:'MLB',ib:[1016.196, 222.443, 24.156, 154.466, 69695],ob:[868.509, 32.663, 40.262, 95.326, 15992]},
+  {id:'BRMG01',c:'MLB',ib:[9815.161, 4747.816, 35.432, 11.214, 807227],ob:[22408.149, 8352.459, 162.811, 85.463, 680978]},
+  {id:'BRMG02',c:'MLB',ib:[12791.728, 6034.337, 53.902, 160.532, 783241],ob:[27571.594, 7256.32, 8.086, 590.053, 712843]},
+  {id:'BRMG03',c:'MLB',ib:[4293.923, 3383.862, 2.152, 46.204, 168143],ob:[8285.821, 2860.421, 29.207, 64.743, 139560]},
+  {id:'BRMG04',c:'MLB',ib:[353.121, 300.794, 0.0, 0.782, 5399],ob:[271.084, 113.54, 0.138, 1.015, 3979]},
+  {id:'BRPE01',c:'MLB',ib:[4766.561, 1557.17, 3.422, 36.952, 726945],ob:[20596.894, 5793.747, 33.587, 92.237, 802884]},
+  {id:'BRPR01',c:'MLB',ib:[2975.38, 704.756, 48.405, 9.331, 464983],ob:[9578.912, 1768.508, 63.985, 54.14, 491955]},
+  {id:'BRRC01',c:'MLB',ib:[12713.592, 5807.279, 32.482, 702.608, 575025],ob:[4761.61, 2253.202, 0.0, 402.179, 32253]},
+  {id:'BRRC02',c:'MLB',ib:[5052.028, 1827.231, 8.676, 246.917, 249675],ob:[2338.869, 993.121, 2.442, 85.162, 12469]},
+  {id:'BRRC03',c:'MLB',ib:[9118.389, 6870.273, 24.168, 359.079, 105657],ob:[5565.549, 3566.09, 11.8, 285.977, 20001]},
+  {id:'BRRJ02',c:'MLB',ib:[5312.614, 1555.672, 195.312, 22.745, 770498],ob:[19340.17, 5527.274, 624.142, 109.574, 861812]},
+  {id:'BRRS01',c:'MLB',ib:[540.017, 105.594, 1.711, 6.9, 86209],ob:[1951.485, 253.957, 2.263, 17.567, 89123]},
+  {id:'BRSC02',c:'MLB',ib:[26593.249, 5990.74, 200.316, 284.133, 2748170],ob:[74769.965, 22456.364, 1402.04, 752.167, 2315449]},
+  {id:'BRSP02',c:'MLB',ib:[14709.937, 3539.74, 6.883, 64.797, 2823186],ob:[72130.664, 16288.376, 7.582, 1221.989, 2478057]},
+  {id:'BRSP04',c:'MLB',ib:[13728.164, 2257.026, 0.049, 194.459, 2819797],ob:[60973.171, 17676.924, 144.603, 289.108, 2397211]},
+  {id:'BRSP06',c:'MLB',ib:[28322.201, 12111.642, 256.721, 713.769, 2557988],ob:[82713.936, 25606.581, 792.356, 1299.172, 2366504]},
+  {id:'BRSP09',c:'MLB',ib:[286.461, 136.153, 0.0, 0.0, 9483],ob:[616.25, 133.286, 6.588, 1.717, 12770]},
+  {id:'BRSP10',c:'MLB',ib:[15682.862, 7619.552, 2.027, 353.646, 536621],ob:[17780.606, 6163.536, 340.637, 171.902, 336336]},
+  {id:'BRSP11',c:'MLB',ib:[17247.193, 10507.425, 0.0, 66.821, 471282],ob:[19827.574, 7826.692, 0.452, 41.459, 329578]},
+  {id:'BRSP14',c:'MLB',ib:[3441.281, 424.142, 1.156, 88.926, 667345],ob:[17485.585, 5570.693, 0.358, 183.048, 671791]},
+  {id:'BRSP15',c:'MLB',ib:[2023.041, 286.105, 18.499, 16.606, 422124],ob:[15417.718, 4109.522, 235.351, 74.586, 594747]},
+  {id:'BRSP18',c:'MLB',ib:[2418.15, 287.436, 3.768, 2.901, 495163],ob:[12674.415, 4405.389, 0.0, 39.627, 484043]},
+  {id:'BRSP19',c:'MLB',ib:[3591.593, 435.658, 1.045, 11.466, 761829],ob:[15609.905, 4613.848, 64.129, 163.99, 649198]},
+  {id:'BRSP24',c:'MLB',ib:[372.353, 50.852, 7.478, 1.311, 64655],ob:[2105.304, 329.517, 33.709, 6.97, 88006]},
+  {id:'BRSP25',c:'MLB',ib:[3235.469, 364.893, 15.841, 12.452, 695324],ob:[13118.004, 3136.78, 44.654, 157.27, 529379]},
+  {id:'BRSP26',c:'MLB',ib:[1485.343, 139.99, 1.328, 29.896, 316936],ob:[7439.703, 1558.338, 46.905, 154.006, 254000]},
+  {id:'BRSP30',c:'MLB',ib:[106.013, 26.091, 0.0, 1.589, 15116],ob:[160.719, 8.773, 0.286, 0.646, 11128]},
+  {id:'BRXES1',c:'MLB',ib:[0.049, 0.0, 0.049, 0.0, 0],ob:null},
+  {id:'CAMPINAS',c:'MLB',ib:[0.152, 0.152, 0.0, 0.0, 0],ob:[0.224, 0.224, 0.0, 0.0, 0]},
+  {id:'CLBB01',c:'MLC',ib:[69.265, 3.255, 0.0, 0.0, 18762],ob:[391.154, 54.852, 3.618, 0.649, 20315]},
+  {id:'CLRM03',c:'MLC',ib:[18266.707, 3951.726, 630.427, 64.748, 1451025],ob:[35962.381, 6893.029, 16.494, 98.697, 1596052]},
+  {id:'COCU02',c:'MCO',ib:[2329.564, 751.984, 38.014, 15.682, 194745],ob:[6863.758, 1946.388, 212.051, 15.251, 217715]},
+  {id:'MXBC01',c:'MLM',ib:[443.883, 109.608, 1.081, 4.579, 43049],ob:[1099.465, 83.705, 14.583, 50.044, 37429]},
+  {id:'MXCD02',c:'MLM',ib:[21619.069, 3836.514, 550.813, 10.032, 2808227],ob:[51385.647, 12019.921, 133.785, 74.579, 1875654]},
+  {id:'MXCD05',c:'MLM',ib:[21464.715, 5705.953, 112.595, 1351.492, 770967],ob:[14388.014, 4961.769, 258.625, 73.794, 214523]},
+  {id:'MXCD06',c:'MLM',ib:[17403.803, 4723.476, 258.004, 79.389, 2076460],ob:[22065.901, 3892.117, 1047.992, 71.476, 758751]},
+  {id:'MXCD07',c:'MLM',ib:[2265.55, 142.876, 5.804, 3.11, 344405],ob:[7091.198, 640.548, 129.119, 12.36, 286253]},
+  {id:'MXCD09',c:'MLM',ib:[12116.341, 2082.111, 311.934, 8.016, 1717199],ob:[51888.902, 11096.769, 2141.934, 122.219, 1693404]},
+  {id:'MXCD10',c:'MLM',ib:[9612.486, 1661.06, 9.941, 25.321, 1643963],ob:[46264.162, 10295.013, 895.354, 109.813, 1673121]},
+  {id:'MXCD11',c:'MLM',ib:[2960.137, 1204.412, 3.561, 0.898, 197656],ob:[7324.321, 2535.271, 161.538, 19.417, 149526]},
+  {id:'MXCD12',c:'MLM',ib:[3195.78, 924.1, 1.166, 6.066, 197602],ob:[7126.323, 2201.876, 56.124, 48.652, 140640]},
+  {id:'MXCD14',c:'MLM',ib:[9466.641, 2193.555, 51.166, 743.329, 312898],ob:[2593.479, 918.451, 15.861, 75.917, 29922]},
+  {id:'MXCD20',c:'MLM',ib:[59.151, 3.847, 0.0, 0.152, 11235],ob:[161.406, 3.814, 3.426, 0.0, 10897]},
+  {id:'MXCH02',c:'MLM',ib:[403.918, 78.113, 0.0, 305.09, 0],ob:[0.168, 0.168, 0.0, 0.0, 0]},
+  {id:'MXGT01',c:'MLM',ib:[10264.271, 3018.286, 226.235, 73.102, 1261258],ob:[32361.425, 9317.003, 674.799, 212.128, 1042074]},
+  {id:'MXJC01',c:'MLM',ib:[17071.559, 5599.256, 249.944, 35.154, 1943951],ob:[31659.513, 9942.824, 1504.893, 77.578, 1130878]},
+  {id:'MXJC02',c:'MLM',ib:[2070.073, 649.47, 38.548, 12.321, 149460],ob:[4773.337, 1574.675, 61.831, 7.046, 112801]},
+  {id:'MXNL01',c:'MLM',ib:[10753.836, 3408.229, 289.529, 35.588, 1516654],ob:[28830.589, 10214.809, 854.685, 116.787, 1093266]},
+  {id:'MXPB01',c:'MLM',ib:[725.359, 191.086, 52.975, 57.736, 39696],ob:[667.182, 122.637, 35.556, 66.409, 7943]},
+  {id:'MXRC03',c:'MLM',ib:[14963.165, 8532.699, 56.182, 228.361, 430174],ob:[7581.017, 4855.018, 33.562, 100.237, 45649]},
+  {id:'MXSO01',c:'MLM',ib:[244.968, 34.508, 14.97, 0.364, 26489],ob:[690.587, 32.539, 12.312, 0.0, 28722]},
+  {id:'MXXEM3',c:'MLM',ib:[0.01, 0.0, 0.0, 0.0, 0],ob:null},
+  {id:'MXYU01',c:'MLM',ib:[4021.029, 1229.489, 78.8, 2.712, 538261],ob:[12302.946, 2731.639, 242.524, 22.156, 444872]},
+  {id:'PELI01',c:'MPE',ib:[14.997, 1.651, 1.874, 0.0, 1342],ob:[90.069, 18.505, 22.657, 0.0, 1878]},
+  {id:'SSP22',c:'MLB',ib:null,ob:[0.229, 0.229, 0.0, 0.0, 0]},
+  {id:'USTX01',c:'MLM',ib:[520.19, 23.019, 13.609, 31.949, 52921],ob:[1110.411, 17.549, 36.483, 32.554, 51487]}
+],
+  ALL: RAW
+};
+// ─── CORE CALCULATIONS ────────────────────────────────────────────────────
+// arr format: [total_h, tns_h, tnd_h, idle_h, units] — from DM_LMS_CONSOLIDATED_METRICS_BY_DIMENSIONS
+// prod = units / total_h  (matches LMS Monitor "Productividad Neta" exactly)
+function mkMetric(units, denom, tns, tnd, idle) {
+  if (denom < 0.5) return null;
+  return {
+    prod: units / denom,
+    tns_pct: tns / denom * 100,
+    tnd_pct: tnd / denom * 100,
+    idle_pct: idle / denom * 100,
+    t: denom, u: units, tns, tnd, idle
+  };
+}
+
+function computeIB(r) {
+  if (!r.ib || r.ib[0] < 0.5 || r.ib[4] < 100) return null;
+  return mkMetric(r.ib[4], r.ib[0], r.ib[1], r.ib[2], r.ib[3]);
+}
+
+function computeOB(r) {
+  if (!r.ob || r.ob[0] < 0.5 || r.ob[4] < 1000) return null;
+  const result = mkMetric(r.ob[4], r.ob[0], r.ob[1], r.ob[2], r.ob[3]);
+  if (!result || result.prod < 5) return null;
+  return result;
+}
+
+function computeTOT(r) {
+  if (!r.ib && !r.ob) return null;
+  const t    = (r.ib?.[0]||0) + (r.ob?.[0]||0);
+  if (t < 0.5) return null;
+  const tns  = (r.ib?.[1]||0) + (r.ob?.[1]||0);
+  const tnd  = (r.ib?.[2]||0) + (r.ob?.[2]||0);
+  const idle = (r.ib?.[3]||0) + (r.ob?.[3]||0);
+  const u    = (r.ib?.[4]||0) + (r.ob?.[4]||0);
+  return mkMetric(u, t, tns, tnd, idle);
+}
+
+
+const DATA = RAW.map(r => {
+  const ib  = computeIB(r);
+  const ob  = computeOB(r);
+  const tot = computeTOT(r);
+  return { id: r.id, country: r.c, ib, ob, tot };
+}).filter(d => d.ib);
+
+// ── HEADCOUNT TIERS (basado en horas totales W15-W18 acumulado ÷ 160 ≈ HC)
+// XS <31HC | S 31-156HC | M 156-500HC | L 500-1125HC | XL >1125HC
+const HC_TIERS = {};
+RAW.forEach(r => {
+  const h = (r.ib?.[0]||0) + (r.ob?.[0]||0);
+  HC_TIERS[r.id] = h < 5000 ? 'XS' : h < 25000 ? 'S' : h < 80000 ? 'M' : h < 180000 ? 'L' : 'XL';
+});
+const TIER_COLORS = { XS:'#9e9e9e', S:'#42a5f5', M:'#66bb6a', L:'#ff8f00', XL:'#7b1fa2' };
+const TIER_LABEL  = { XS:'XS <30HC', S:'S 30-150HC', M:'M 150-500HC', L:'L 500-1100HC', XL:'XL +1100HC' };
+
+function colVals(obj, key) {
+  return DATA.map(d => d[obj]?.[key]).filter(v => v != null && isFinite(v));
+}
+function pctRank(val, arr, hib) {
+  if (val == null || !isFinite(val)) return 0.5;
+  const below = arr.filter(v => v < val).length;
+  const r = below / Math.max(arr.length - 1, 1);
+  return hib ? (1 - r) : r;
+}
+function pct(arr, p) {
+  const s = [...arr].sort((a,b)=>a-b);
+  return s[Math.max(0,Math.floor(s.length * p) - (p===1?1:0))];
+}
+function median(arr) { return pct(arr, 0.5); }
+
+function computeScore(fc) {
+  const metrics = [
+    {v:fc.ib?.prod,     a:colVals('ib','prod'),     hib:true},
+    {v:fc.ob?.prod,     a:colVals('ob','prod'),     hib:true},
+    {v:fc.ib?.tns_pct,  a:colVals('ib','tns_pct'),  hib:false},
+    {v:fc.ob?.tns_pct,  a:colVals('ob','tns_pct'),  hib:false},
+    {v:fc.tot?.tns_pct, a:colVals('tot','tns_pct'), hib:false},
+    {v:fc.ib?.idle_pct, a:colVals('ib','idle_pct'), hib:false},
+    {v:fc.ob?.idle_pct, a:colVals('ob','idle_pct'), hib:false},
+    {v:fc.ib?.tnd_pct,  a:colVals('ib','tnd_pct'),  hib:false},
+    {v:fc.ob?.tnd_pct,  a:colVals('ob','tnd_pct'),  hib:false},
+    {v:fc.tot?.tnd_pct, a:colVals('tot','tnd_pct'), hib:false},
+  ];
+  const scores = metrics.filter(m=>m.v!=null).map(m=>pctRank(m.v,m.a,m.hib));
+  return Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*100);
+}
+
+DATA.forEach(d => { d.score = computeScore(d); });
+DATA.forEach(d => { d.total_h = (d.ib?.t||0) + (d.ob?.t||0); });
+const allH = DATA.map(d=>d.total_h);
+DATA.forEach(d => {
+  const below = allH.filter(h=>h<d.total_h).length;
+  d.vol_pct = below / Math.max(allH.length-1,1);
+  d.priority = Math.round(d.score*0.6 + d.vol_pct*100*0.4);
+});
+
+// ─── NETWORK STATS ────────────────────────────────────────────────────────
+const NS = {
+  ib_prod:  { med:median(colVals('ib','prod')),  p25:pct(colVals('ib','prod'),.25),  p75:pct(colVals('ib','prod'),.75),  p90:pct(colVals('ib','prod'),.90) },
+  ob_prod:  { med:median(colVals('ob','prod')),  p25:pct(colVals('ob','prod'),.25),  p75:pct(colVals('ob','prod'),.75),  p90:pct(colVals('ob','prod'),.90) },
+  ib_tns:   { med:median(colVals('ib','tns_pct')), p75:pct(colVals('ib','tns_pct'),.75), p25:pct(colVals('ib','tns_pct'),.25) },
+  ob_tns:   { med:median(colVals('ob','tns_pct')), p75:pct(colVals('ob','tns_pct'),.75) },
+  tot_tns:  { med:median(colVals('tot','tns_pct')), p75:pct(colVals('tot','tns_pct'),.75) },
+  ib_idle:  { med:median(colVals('ib','idle_pct')), p75:pct(colVals('ib','idle_pct'),.75) },
+  ob_idle:  { med:median(colVals('ob','idle_pct')), p75:pct(colVals('ob','idle_pct'),.75) },
+};
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────
+const FLAGS = {MLA:'🇦🇷',MLB:'🇧🇷',MLM:'🇲🇽',MLC:'🇨🇱',MCO:'🇨🇴',MPE:'🇵🇪',MLU:'🇺🇾',MUS:'🇺🇸'};
+const CC = {MLA:'#e3f2fd;color:#0d47a1',MLB:'#e8f5e9;color:#1b5e20',MLM:'#fff3e0;color:#e65100',MLC:'#fce4ec;color:#880e4f',MCO:'#f3e5f5;color:#4a148c',MPE:'#e0f7fa;color:#006064',MLU:'#fff8e1;color:#f57f17',MUS:'#ede7f6;color:#311b92'};
+const f1 = v => v==null?'—':v.toFixed(1);
+const f0 = v => v==null?'—':v.toFixed(0);
+
+function scoreColor(s) {
+  if(s>=70) return '#b71c1c';
+  if(s>=55) return '#e65100';
+  if(s>=40) return '#f9a825';
+  return '#2e7d32';
+}
+function scoreClass(s) {
+  if(s>=70) return 'sc-red'; if(s>=55) return 'sc-orange'; if(s>=40) return 'sc-yellow'; return 'sc-blue';
+}
+function priorityClass(priority) {
+  if(priority>=70) return 'p1'; if(priority>=55) return 'p2'; if(priority>=40) return 'p3'; return 'p4';
+}
+function rankClass(i) { if(i===0) return 'r1'; if(i===1) return 'r2'; if(i===2) return 'r3'; return ''; }
+
+function cellBg(val, arr, hib) {
+  if(val==null) return '';
+  const s=[...arr].sort((a,b)=>a-b);
+  const p25=s[Math.floor(s.length*.25)], p75=s[Math.floor(s.length*.75)];
+  if(hib){ if(val>=p75) return '#c8e6c9'; if(val<=p25) return '#ffcdd2'; return '#fff9c4'; }
+  else   { if(val<=p25) return '#c8e6c9'; if(val>=p75) return '#ffcdd2'; return '#fff9c4'; }
+}
+
+// ─── RECOMMENDATION ENGINE ────────────────────────────────────────────────
+function getBenchmarkFor(metric, obj, key, higher_is_better) {
+  const valid = DATA.filter(d => d[obj]?.[key] != null);
+  if(!valid.length) return null;
+  return higher_is_better
+    ? valid.reduce((a,b) => (b[obj][key] > a[obj][key] ? b : a))
+    : valid.reduce((a,b) => (b[obj][key] < a[obj][key] ? b : a));
+}
+
+function generateReco(fc) {
+  const issues = [];
+
+  // IB Productivity
+  if(fc.ib?.prod != null) {
+    const gap = ((NS.ib_prod.med - fc.ib.prod) / NS.ib_prod.med * 100);
+    if(fc.ib.prod < NS.ib_prod.p25) {
+      const bm = getBenchmarkFor('ib_prod','ib','prod',true);
+      issues.push({ sev:'red', chip:`IB Prod: ${f0(fc.ib.prod)} u/h`, text:`Productividad IB en bottom 25% de la red (mediana: ${f0(NS.ib_prod.med)} u/h, gap ${f0(gap)}%). Revisar métodos de trabajo, balanceo de carga y dotación. Benchmark: <strong>${bm?.id}</strong> (${f0(bm?.ib?.prod)} u/h)` });
+    }
+  }
+  // OB Productivity
+  if(fc.ob?.prod != null) {
+    const gap = ((NS.ob_prod.med - fc.ob.prod) / NS.ob_prod.med * 100);
+    if(fc.ob.prod < NS.ob_prod.p25) {
+      const bm = getBenchmarkFor('ob_prod','ob','prod',true);
+      issues.push({ sev:'red', chip:`OB Prod: ${f0(fc.ob.prod)} u/h`, text:`Productividad OB en bottom 25% (mediana: ${f0(NS.ob_prod.med)} u/h, gap ${f0(gap)}%). Foco en picking y packing. Benchmark: <strong>${bm?.id}</strong> (${f0(bm?.ob?.prod)} u/h)` });
+    }
+  }
+  // IB %TNS
+  if(fc.ib?.tns_pct != null && fc.ib.tns_pct > NS.ib_tns.p75) {
+    const bm = getBenchmarkFor('ib_tns','ib','tns_pct',false);
+    issues.push({ sev:'orange', chip:`%TNS IB: ${f1(fc.ib.tns_pct)}%`, text:`Tiempo no sistémico IB elevado (red P75: ${f1(NS.ib_tns.p75)}%). Analizar causas: roturas de sistema, esperas entre tareas, cuellos de botella. Referencia: <strong>${bm?.id}</strong> (${f1(bm?.ib?.tns_pct)}%)` });
+  }
+  // OB %TNS
+  if(fc.ob?.tns_pct != null && fc.ob.tns_pct > NS.ob_tns.p75) {
+    const bm = getBenchmarkFor('ob_tns','ob','tns_pct',false);
+    issues.push({ sev:'orange', chip:`%TNS OB: ${f1(fc.ob.tns_pct)}%`, text:`Alto TNS en Outbound. Revisar sistemas, equipamiento de picking y flujo de despacho. Referencia: <strong>${bm?.id}</strong> (${f1(bm?.ob?.tns_pct)}%)` });
+  }
+  // IB %Idle
+  if(fc.ib?.idle_pct != null && fc.ib.idle_pct > NS.ib_idle.p75) {
+    issues.push({ sev:'orange', chip:`%Idle IB: ${f1(fc.ib.idle_pct)}%`, text:`Alta ociosidad en IB. Revisar planificación de turnos, asignación de tareas y equilibrio de flujo entrante.` });
+  }
+  // OB %Idle
+  if(fc.ob?.idle_pct != null && fc.ob.idle_pct > NS.ob_idle.p75) {
+    issues.push({ sev:'orange', chip:`%Idle OB: ${f1(fc.ob.idle_pct)}%`, text:`Alta ociosidad en OB. Evaluar diseño de waves, batch size y dotación por turno.` });
+  }
+
+  // If no issues but high score (catch-all)
+  if(issues.length === 0 && fc.score >= 50) {
+    issues.push({ sev:'grey', chip:`Score: ${fc.score}`, text:`Performance general por debajo de la mediana en múltiples métricas combinadas. Revisar auditoría integral del site.` });
+  }
+
+  return issues.slice(0, 3);
+}
+
+// ─── RENDER KPIs ─────────────────────────────────────────────────────────
+function renderKPIs(fcs) {
+  const ibFcs = fcs.filter(d=>d.ib);
+  const obFcs = fcs.filter(d=>d.ob);
+  const avgIBProd = ibFcs.reduce((s,d)=>s+d.ib.prod,0)/ibFcs.length;
+  const avgOBProd = obFcs.length ? obFcs.reduce((s,d)=>s+d.ob.prod,0)/obFcs.length : 0;
+  const totH = fcs.reduce((s,d)=>s+d.total_h,0);
+  const topFcs = [...fcs].sort((a,b)=>b.priority-a.priority);
+  const critical = fcs.filter(d=>d.score>=70).length;
+  const avgTNS = fcs.filter(d=>d.tot).reduce((s,d)=>s+d.tot.tns_pct,0)/fcs.filter(d=>d.tot).length;
+  const benchFC = [...fcs].sort((a,b)=>a.score-b.score)[0];
+
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi-card blue">
+      <div class="kpi-label">FCs en la Red</div>
+      <div class="kpi-value">${fcs.length}</div>
+      <div class="kpi-footnote">${obFcs.length} con OB · ${ibFcs.length} con IB</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Prod Neta IB · Promedio Red</div>
+      <div class="kpi-value">${f0(avgIBProd)}<span style="font-size:14px;font-weight:400"> u/h</span></div>
+      <div class="kpi-footnote">P25: ${f0(NS.ib_prod.p25)} · P75: ${f0(NS.ib_prod.p75)} u/h</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Prod Neta OB · Promedio Red</div>
+      <div class="kpi-value">${f0(avgOBProd)}<span style="font-size:14px;font-weight:400"> u/h</span></div>
+      <div class="kpi-footnote">P25: ${f0(NS.ob_prod.p25)} · P75: ${f0(NS.ob_prod.p75)} u/h</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">%TNS Promedio Red</div>
+      <div class="kpi-value">${f1(avgTNS)}<span style="font-size:14px;font-weight:400">%</span></div>
+      <div class="kpi-footnote">P75: ${f1(NS.tot_tns.p75)}% · alerta arriba de este valor</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Sites Críticos · Score ≥70</div>
+      <div class="kpi-value">${critical}</div>
+      <div class="kpi-delta"><span class="dn">${f0(critical/fcs.length*100)}% de la red</span> requiere intervención urgente</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">Site #1 Benchmark</div>
+      <div class="kpi-value" style="font-size:20px">${FLAGS[benchFC?.country]||''} ${benchFC?.id}</div>
+      <div class="kpi-footnote">Score ${benchFC?.score} · ${benchFC?.country} · IB ${f0(benchFC?.ib?.prod)} u/h · OB ${f0(benchFC?.ob?.prod)} u/h</div>
+    </div>
+  `;
+}
+
+// ─── RENDER PRIORITY LIST ─────────────────────────────────────────────────
+function renderPriorityList(fcs) {
+  const top10 = [...fcs].sort((a,b)=>b.priority-a.priority).slice(0,10);
+  const el = document.getElementById('priorityList');
+  el.innerHTML = top10.map((fc,i) => {
+    const issues = generateReco(fc);
+    const chips = issues.map(iss => `<span class="pi-chip ${iss.sev}">${iss.chip}</span>`).join('');
+    const recoText = issues.length ? issues[0].text : 'Auditoría integral recomendada';
+    const volK = (fc.total_h/1000).toFixed(0);
+    return `
+      <div class="priority-item ${priorityClass(fc.priority)}">
+        <div class="pi-header">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="pi-rank ${rankClass(i)}">${i+1}</span>
+            <div>
+              <span class="pi-fc">${FLAGS[fc.country]||''} ${fc.id}</span>
+              <span class="country-pill" style="background:${CC[fc.country]?.split(';')[0]||'#eee'};${CC[fc.country]?.split(';')[1]||''};margin-left:6px">${fc.country}</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="pi-vol">${volK}k hrs</span>
+            <span class="pi-score ${scoreClass(fc.score)}">Score ${fc.score}</span>
+            <span style="font-weight:800;font-size:13px;background:#1a1a2e;color:#FFE600;padding:2px 8px;border-radius:8px">P${fc.priority}</span>
+          </div>
+        </div>
+        <div class="pi-metrics">${chips}</div>
+        <div class="pi-reco">${recoText}</div>
+      </div>`;
+  }).join('');
+}
+
+// ─── RENDER BENCHMARKS ────────────────────────────────────────────────────
+function renderBenchmarks(fcs) {
+  const medals = ['🥇','🥈','🥉'];
+  const classes = ['gold','silver','bronze'];
+
+  // TOP IB: menor badness combinado (prod alta + TNS baja) → ascendente
+  const ibSorted = [...fcs].filter(d=>d.ib)
+    .sort((a,b) => {
+      const sa = pctRank(a.ib.prod, colVals('ib','prod'), true) + pctRank(a.ib.tns_pct, colVals('ib','tns_pct'), false);
+      const sb = pctRank(b.ib.prod, colVals('ib','prod'), true) + pctRank(b.ib.tns_pct, colVals('ib','tns_pct'), false);
+      return sa - sb;
+    });
+  const topIB = ibSorted.slice(0,3);
+
+  const obSorted = [...fcs].filter(d=>d.ob)
+    .sort((a,b) => {
+      const sa = pctRank(a.ob.prod, colVals('ob','prod'), true) + pctRank(a.ob.tns_pct, colVals('ob','tns_pct'), false);
+      const sb = pctRank(b.ob.prod, colVals('ob','prod'), true) + pctRank(b.ob.tns_pct, colVals('ob','tns_pct'), false);
+      return sa - sb;
+    });
+  const topOB = obSorted.slice(0,3);
+
+  function renderBenchCard(fc, i, type) {
+    const data = fc[type];
+    if(!data) return '';
+    return `
+      <div class="bench-card ${classes[i]}">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <span class="bench-medal">${medals[i]}</span>
+          <span class="country-pill" style="background:${CC[fc.country]?.split(';')[0]||'#eee'};${CC[fc.country]?.split(';')[1]||''}">${FLAGS[fc.country]||''} ${fc.country}</span>
+        </div>
+        <div class="bench-fc">${fc.id}</div>
+        <div class="bench-metrics">
+          <div class="bench-metric"><div class="bench-metric-val">${f0(data.prod)}</div><div class="bench-metric-label">u/h NET</div></div>
+          <div class="bench-metric"><div class="bench-metric-val" style="color:#e65100">${f1(data.tns_pct)}%</div><div class="bench-metric-label">%TNS</div></div>
+          <div class="bench-metric"><div class="bench-metric-val" style="color:#6a1b9a">${f1(data.idle_pct)}%</div><div class="bench-metric-label">%Idle</div></div>
+          <div class="bench-metric"><div class="bench-metric-val" style="color:#1565c0">${((fc.total_h||0)/1000).toFixed(0)}k</div><div class="bench-metric-label">Horas</div></div>
+        </div>
+        <div style="margin-top:6px;font-size:10px;color:#555">Score general: <strong>${fc.score}</strong> (percentil ${100-fc.score}° mejor)</div>
+      </div>`;
+  }
+
+  document.getElementById('benchIB').innerHTML = topIB.map((fc,i) => renderBenchCard(fc,i,'ib')).join('');
+  document.getElementById('benchOB').innerHTML = topOB.map((fc,i) => renderBenchCard(fc,i,'ob')).join('');
+}
+
+// ─── RENDER ALERTS ────────────────────────────────────────────────────────
+function renderAlerts(fcs) {
+  function alertItem(fc, val, label, cls, icon) {
+    return `<div class="alert-item">
+      <span class="alert-icon">${icon}</span>
+      <div style="flex:1">
+        <div class="alert-fc">${FLAGS[fc.country]||''} ${fc.id} <span class="country-pill" style="background:${CC[fc.country]?.split(';')[0]||'#eee'};${CC[fc.country]?.split(';')[1]||''}">${fc.country}</span></div>
+        <div class="alert-msg">${label}</div>
+      </div>
+      <span class="alert-val ${cls}">${val}</span>
+    </div>`;
+  }
+
+  const byTNS = [...fcs].filter(d=>d.tot?.tns_pct!=null).sort((a,b)=>b.tot.tns_pct-a.tot.tns_pct).slice(0,5);
+  document.getElementById('alertTNS').innerHTML = byTNS.map(fc => alertItem(fc, `${f1(fc.tot.tns_pct)}%`, `Red P75: ${f1(NS.tot_tns.p75)}%`, 'alert-tns', '⏳')).join('');
+
+  const byIdle = [...fcs].filter(d=>d.tot?.idle_pct!=null).sort((a,b)=>b.tot.idle_pct-a.tot.idle_pct).slice(0,5);
+  document.getElementById('alertIdle').innerHTML = byIdle.map(fc => alertItem(fc, `${f1(fc.tot.idle_pct)}%`, `Tiempo ocioso total`, 'alert-idle', '😴')).join('');
+
+  const byOBProd = [...fcs].filter(d=>d.ob?.prod!=null).sort((a,b)=>a.ob.prod-b.ob.prod).slice(0,5);
+  document.getElementById('alertProd').innerHTML = byOBProd.map(fc => alertItem(fc, `${f0(fc.ob.prod)} u/h`, `Red P25: ${f0(NS.ob_prod.p25)} u/h`, 'alert-prod', '📉')).join('');
+}
+
+// ─── RENDER TABLE ─────────────────────────────────────────────────────────
+function renderTable(fcs) {
+  // Group by tier if no tier filter active, else just sort by priority
+  const ct = document.getElementById('filterTier')?.value || 'all';
+  const tierOrder = ['XL','L','M','S','XS'];
+  const sorted = ct !== 'all'
+    ? [...fcs].sort((a,b)=>b.priority-a.priority)
+    : tierOrder.flatMap(t => [...fcs].filter(d=>d.tier===t).sort((a,b)=>b.priority-a.priority));
+  const ibP = colVals('ib','prod'), obP = colVals('ob','prod');
+  const ibTns = colVals('ib','tns_pct'), obTns = colVals('ob','tns_pct');
+  const ibIdle = colVals('ib','idle_pct'), obIdle = colVals('ob','idle_pct');
+  const ibTnd = colVals('ib','tnd_pct'), obTnd = colVals('ob','tnd_pct');
+  const totTns = colVals('tot','tns_pct'), totIdle = colVals('tot','idle_pct'), totTnd = colVals('tot','tnd_pct');
+
+  function td(v, arr, hib, dec=1) {
+    if(v==null) return `<td><span class="na">—</span></td>`;
+    const bg = cellBg(v, arr, hib);
+    return `<td style="background:${bg}">${dec===0?f0(v):f1(v)}</td>`;
+  }
+
+  let lastTier = null;
+  document.getElementById('tableBody').innerHTML = sorted.map((d,i) => {
+    const sc = d.score;
+    const scStyle = `background:${sc>=70?'#ffebee':sc>=55?'#fff3e0':sc>=40?'#e3f2fd':'#e8f5e9'};color:${scoreColor(sc)}`;
+    const pr = d.priority;
+    const prStyle = `background:${pr>=70?'#b71c1c':pr>=55?'#e65100':pr>=40?'#f9a825':'#2e7d32'};color:#fff`;
+    let groupHeader = '';
+    if (ct === 'all' && d.tier !== lastTier) {
+      lastTier = d.tier;
+      const tierFcs = fcs.filter(x=>x.tier===d.tier);
+      const tierIBs = tierFcs.map(x=>x.ib?.prod).filter(v=>v!=null);
+      const tierOBs = tierFcs.map(x=>x.ob?.prod).filter(v=>v!=null);
+      const medIB = tierIBs.length ? (tierIBs.sort((a,b)=>a-b)[Math.floor(tierIBs.length/2)]).toFixed(0) : '—';
+      const medOB = tierOBs.length ? (tierOBs.sort((a,b)=>a-b)[Math.floor(tierOBs.length/2)]).toFixed(0) : '—';
+      groupHeader = `<tr><td colspan="16" class="tier-group-header" style="border-left:4px solid ${TIER_COLORS[d.tier]}">
+        <span class="tier-badge tier-${d.tier}" style="font-size:10px;padding:2px 8px">${d.tier}</span>
+        &nbsp;${TIER_LABEL[d.tier]} &nbsp;·&nbsp; ${tierFcs.length} FCs &nbsp;·&nbsp; Mediana IB: <strong>${medIB} u/h</strong> &nbsp;·&nbsp; Mediana OB: <strong>${medOB} u/h</strong>
+      </td></tr>`;
+    }
+    return `${groupHeader}<tr>
+      <td style="text-align:center;color:#999;font-size:10px">${i+1}</td>
+      <td class="fc-name">${FLAGS[d.country]||''} ${d.id}<span class="tier-badge tier-${d.tier}">${d.tier}</span></td>
+      <td><span class="country-pill ${d.country}">${d.country}</span></td>
+      ${td(d.ib?.prod, ibP, true, 0)}${td(d.ib?.tns_pct, ibTns, false)}${td(d.ib?.idle_pct, ibIdle, false)}${td(d.ib?.tnd_pct, ibTnd, false)}
+      ${d.ob ? td(d.ob.prod, obP, true, 0)+td(d.ob.tns_pct, obTns, false)+td(d.ob.idle_pct, obIdle, false)+td(d.ob.tnd_pct, obTnd, false) : '<td colspan="4"><span class="na">Sin OB</span></td>'}
+      ${td(d.tot?.tns_pct, totTns, false)}${td(d.tot?.idle_pct, totIdle, false)}${td(d.tot?.tnd_pct, totTnd, false)}
+      <td>${((d.total_h||0)/1000).toFixed(1)}k</td>
+      <td><span class="score-cell" style="${scStyle}">${sc}</span></td>
+      <td><span class="rank-badge" style="${prStyle}">${pr}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── RENDER CHARTS ────────────────────────────────────────────────────────
+let chartQ, chartIB, chartOB;
+
+function renderCharts(fcs) {
+  // QUADRANT: x=log(vol), y=100-score (performance), r=sqrt(vol)
+  const qData = fcs.map(d => ({
+    x: Math.log10(Math.max(d.total_h, 1)),
+    y: 100 - d.score,
+    r: Math.sqrt(d.total_h / 800),
+    fc: d.id,
+    country: d.country,
+    score: d.score,
+    priority: d.priority,
+    tier: d.tier
+  }));
+
+  // Color by tier (outline) + score (fill)
+  const qColors = qData.map(d => {
+    if(d.score >= 70) return 'rgba(183,28,28,0.75)';
+    if(d.score >= 55) return 'rgba(230,81,0,0.75)';
+    if(d.score >= 40) return 'rgba(249,168,37,0.75)';
+    return 'rgba(46,125,50,0.75)';
+  });
+  const qBorderColors = qData.map(d => TIER_COLORS[d.tier] || '#999');
+
+  if(chartQ) chartQ.destroy();
+  chartQ = new Chart(document.getElementById('quadrantChart').getContext('2d'), {
+    type: 'bubble',
+    data: { datasets: [{ data: qData, backgroundColor: qColors, borderColor: qBorderColors, borderWidth:2 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return [`${FLAGS[d.country]||''} ${d.fc}`, `Performance: ${100-d.score}/100`, `Prioridad RISE: ${d.priority}`];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display:true, text:'Volumen (log escala de horas procesadas)', font:{size:10} },
+          grid: { color:'rgba(0,0,0,.05)' },
+          ticks: {
+            callback: v => {
+              const h = Math.pow(10,v);
+              return h >= 1000 ? `${(h/1000).toFixed(0)}k` : f0(h);
+            }
+          }
+        },
+        y: {
+          title: { display:true, text:'Performance ↑ (100 = mejor)', font:{size:10} },
+          min: 0, max: 100,
+          grid: { color:'rgba(0,0,0,.05)' }
+        }
+      }
+    }
+  });
+
+  // IB PROD BAR — all sites sorted
+  const ibSorted = [...fcs].filter(d=>d.ib).sort((a,b)=>b.ib.prod-a.ib.prod);
+  const ibColors = ibSorted.map(d => d.ib.prod >= NS.ib_prod.p75 ? '#2e7d32' : d.ib.prod <= NS.ib_prod.p25 ? '#c62828' : '#1565c0');
+  if(chartIB) chartIB.destroy();
+  chartIB = new Chart(document.getElementById('ibProdChart').getContext('2d'), {
+    type:'bar',
+    data:{ labels:ibSorted.map(d=>`${FLAGS[d.country]||''}${d.id}`), datasets:[{ data:ibSorted.map(d=>d.ib.prod.toFixed(0)), backgroundColor:ibColors, borderRadius:3 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => `${ctx.parsed.y} u/h` } } },
+      scales:{
+        x:{ ticks:{font:{size:8},maxRotation:60} },
+        y:{ title:{display:true,text:'u/h',font:{size:10}},
+          grid:{color:'rgba(0,0,0,.05)'},
+          ticks:{font:{size:9}},
+          plugins:{}
+        }
+      }
+    }
+  });
+
+  // OB PROD BAR
+  const obSorted = [...fcs].filter(d=>d.ob).sort((a,b)=>b.ob.prod-a.ob.prod);
+  const obColors = obSorted.map(d => d.ob.prod >= NS.ob_prod.p75 ? '#6a1b9a' : d.ob.prod <= NS.ob_prod.p25 ? '#c62828' : '#1565c0');
+  if(chartOB) chartOB.destroy();
+  chartOB = new Chart(document.getElementById('obProdChart').getContext('2d'), {
+    type:'bar',
+    data:{ labels:obSorted.map(d=>`${FLAGS[d.country]||''}${d.id}`), datasets:[{ data:obSorted.map(d=>d.ob.prod.toFixed(0)), backgroundColor:obColors, borderRadius:3 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => `${ctx.parsed.y} u/h` } } },
+      scales:{
+        x:{ ticks:{font:{size:8},maxRotation:60} },
+        y:{ title:{display:true,text:'u/h',font:{size:10}}, grid:{color:'rgba(0,0,0,.05)'}, ticks:{font:{size:9}} }
+      }
+    }
+  });
+}
+
+// ─── SUBPROCESS PRODUCTIVITY HEATMAP ─────────────────────────────────────
+// Subprocess prod = units / pd_h (GROSS) × correction_factor
+// Formula validated: UNITS / PROCESS_DURATION matches LMS Monitor ≤0.2% for ARBA01 W15-W18.
+// DO NOT use NET (arr[0]-arr[1]-arr[2]-arr[3]) — collapses for high-TnS processes (HU: TnS=74% → +253% error).
+// subProd: productividad neta de subproceso = units / total_h (dato directo BQ, sin CFs)
+function subProd(arr, key, fcId) {
+  if (!arr || arr[0] <= 0) return null;
+  return arr[4] / arr[0];  // units / pd_h
+}
+
+function showSubTab(tab) {
+  document.getElementById('subprocIB').style.display = tab === 'ib' ? '' : 'none';
+  document.getElementById('subprocOB').style.display = tab === 'ob' ? '' : 'none';
+  document.getElementById('btnSubIB').className = 'tab-btn' + (tab === 'ib' ? ' active' : '');
+  document.getElementById('btnSubOB').className = 'tab-btn' + (tab === 'ob' ? ' active' : '');
+}
+
+
+// === CONCLUSIONS GENERATOR ===
+function generateConclusions(cols, rawAll) {
+  const WEEKS = ['W15','W16','W17','W18'];
+  const f0loc = v => v == null ? null : Math.round(v);
+
+  const lines = [];
+
+  cols.forEach(col => {
+    const wkMeds = WEEKS.map(wk => {
+      const src = RAW_WEEKLY[wk] || [];
+      const vals = src.map(r => subProd(col.getter(r), col.key, r.id)).filter(v => v != null && v > 0);
+      return vals.length ? median(vals) : null;
+    });
+
+    const med13 = wkMeds[0], med16 = wkMeds[3];
+    if (med13 == null || med16 == null) return;
+
+    // Per-FC trends
+    const allFcIds = new Set();
+    WEEKS.forEach(wk => { (RAW_WEEKLY[wk]||[]).forEach(r => allFcIds.add(r.id)); });
+
+    const trends = [];
+    allFcIds.forEach(fcId => {
+      const v13r = RAW_WEEKLY.W14 ? RAW_WEEKLY.W14.find(x => x.id === fcId) : null;
+      const v16r = RAW_WEEKLY.W17 ? RAW_WEEKLY.W17.find(x => x.id === fcId) : null;
+      const v13 = v13r ? subProd(col.getter(v13r), col.key, fcId) : null;
+      const v16 = v16r ? subProd(col.getter(v16r), col.key, fcId) : null;
+      if (v13 != null && v16 != null && v13 > 5) {
+        trends.push({ id: fcId, v13, v16, pct: (v16 - v13) / v13 * 100 });
+      }
+    });
+
+    if (!trends.length) return;
+
+    trends.sort((a,b) => b.pct - a.pct);
+    const improvers = trends.filter(t => t.pct >= 5).slice(0, 2);
+    const decliners = trends.filter(t => t.pct <= -5).slice(-2).reverse();
+    const stable = trends.filter(t => Math.abs(t.pct) < 5);
+    const stablePct = Math.round(stable.length / trends.length * 100);
+
+    const netTrend = (med16 - med13) / med13 * 100;
+    const netTrendStr = netTrend >= 3
+      ? `<span class="trend-up">+${netTrend.toFixed(0)}% red</span>`
+      : netTrend <= -3
+        ? `<span class="trend-dn">${netTrend.toFixed(0)}% red</span>`
+        : `<span class="trend-fl">estable red</span>`;
+
+    let txt = `<span class="conc-sub">${col.label}</span>`;
+    txt += `Red W16: ${f0loc(med16)} u/h (vs W13: ${f0loc(med13)} u/h, ${netTrendStr}). `;
+
+    if (improvers.length) {
+      const imp = improvers.map(t => `${t.id} (+${t.pct.toFixed(0)}%)`).join(', ');
+      txt += `Mejor evoluc.: <strong>${imp}</strong>. `;
+    }
+    if (decliners.length) {
+      const dec = decliners.map(t => `${t.id} (${t.pct.toFixed(0)}%)`).join(', ');
+      txt += `Caida: <strong>${dec}</strong>. `;
+    }
+    txt += `${stablePct}% de FCs estables (±5%).`;
+
+    lines.push(`<div class="conclusion-item">${txt}</div>`);
+  });
+
+  return lines;
+}
+
+function renderSubproc(fcs) {
+  const ids = new Set(fcs.map(d => d.id));
+  const rawFcs = RAW.filter(r => ids.has(r.id));
+
+  const ibCols = [
+    { label:'Checkin',    key:'chk', getter: r => r.sub?.chk },
+    { label:'Stage In',   key:'st',  getter: r => r.sub?.st  },
+    { label:'Putaway',    key:'pa',  getter: r => r.sub?.pa  }
+  ];
+  const obCols = [
+    { label:'Picking',      key:'pk',  getter: r => r.sub?.pk },
+    { label:'Packing',      key:'pc',  getter: r => r.sub?.pc },
+    { label:'HU Assembly',  key:'hu',  getter: r => r.hu      },
+    { label:'Putwallin',    key:'pw',  getter: r => r.pw      }
+    // Dispatch excluded: BQ counts items (~3.8M) vs LMS dispatch units — incompatible units
+  ];
+
+  function buildTable(tableId, cols) {
+    const WEEKS = ['W15','W16','W17','W18'];
+    const wkLabels = {W14:'W14',W15:'W15',W16:'W16',W17:'W17'};
+
+    // Pre-compute all values per week for colour coding
+    const refRaw = RAW_WEEKLY.W17;
+    const allVals = cols.map(col =>
+      refRaw.map(r => subProd(col.getter(r), col.key, r.id)).filter(v => v != null)
+    );
+
+    const sorted = [...fcs].sort((a, b) => b.priority - a.priority);
+    const thStyle = 'position:sticky;top:0;background:#1a1a2e;color:#FFE600;z-index:2;padding:6px 8px;font-size:10px;font-weight:700;text-align:center';
+    const isIB = tableId === 'ibSubTable';
+    let html = `<thead><tr>
+      <th style="${thStyle};text-align:left">FC</th>
+      <th style="${thStyle}">Pais</th>
+      ${cols.map((c,ci) => {
+        const isDCI = isIB && ci === 0;
+        const sub = isDCI
+          ? `<div style="font-size:8px;font-weight:400;color:rgba(255,230,0,.7)">W14 · W15 · W16 · W17 | Tendencia &nbsp;<span style="color:#7ec8e3">%DCI(W17)</span></div>`
+          : `<div style="font-size:8px;font-weight:400;color:rgba(255,230,0,.7)">W14 · W15 · W16 · W17 | Tendencia</div>`;
+        return `<th style="${thStyle}" colspan="2">${c.label}${sub}</th>`;
+      }).join('')}
+    </tr></thead><tbody>`;
+
+    sorted.forEach(d => {
+      const wkRows = {};
+      WEEKS.forEach(wk => {
+        const src = RAW_WEEKLY[wk] || [];
+        wkRows[wk] = src.find(x => x.id === d.id);
+      });
+      // Check at least one week has data
+      const hasAny = WEEKS.some(wk => wkRows[wk]);
+      if (!hasAny) return;
+
+      html += `<tr>
+        <td style="font-weight:700;font-size:11px;white-space:nowrap;padding:4px 8px">${FLAGS[d.country]||''} ${d.id}</td>
+        <td style="text-align:center;padding:4px 4px"><span class="country-pill" style="background:${CC[d.country]?.split(';')[0]||'#eee'};${CC[d.country]?.split(';')[1]||''}">${d.country}</span></td>
+        ${cols.map((col, ci) => {
+          const wkVals = WEEKS.map(wk => {
+            const r = wkRows[wk];
+            return r ? subProd(col.getter(r), col.key, r.id) : null;
+          });
+          const validVals = wkVals.filter(v => v != null);
+
+          // Build 4 mini week cells
+          const miniCells = WEEKS.map((wk, wi) => {
+            const v = wkVals[wi];
+            if (v == null) return `<span class="wc" style="background:#f5f5f5;color:#bbb">-</span>`;
+            const bg = cellBg(v, allVals[ci], true);
+            return `<span class="wc" style="background:${bg}">${f0(v)}</span>`;
+          }).join('');
+
+          // Trend: compare W13 -> W16
+          let trendHtml = '';
+          const v13 = wkVals[0], v16 = wkVals[3];
+          if (v13 != null && v16 != null && v13 > 0) {
+            const pct_chg = ((v16 - v13) / v13 * 100);
+            const abs_chg = Math.abs(pct_chg).toFixed(0);
+            if (pct_chg >= 3) {
+              trendHtml = `<span class="trend-cell trend-up">&#9650;+${abs_chg}%</span>`;
+            } else if (pct_chg <= -3) {
+              trendHtml = `<span class="trend-cell trend-dn">&#9660;-${abs_chg}%</span>`;
+            } else {
+              trendHtml = `<span class="trend-cell trend-fl">&rarr;${pct_chg >= 0 ? '+' : ''}${pct_chg.toFixed(0)}%</span>`;
+            }
+          } else if (validVals.length > 0) {
+            // Only current week available
+            const v = validVals[validVals.length - 1];
+            const bg = cellBg(v, allVals[ci], true);
+            trendHtml = `<span class="trend-cell trend-fl">&mdash;</span>`;
+          }
+
+          // %DCI badge for IB Checkin column (ci===0)
+          let dciHtml = '';
+          if (isIB && ci === 0) {
+            const dciVal = wkRows['W17']?.sub?.dci_pct ?? wkRows['W16']?.sub?.dci_pct ?? null;
+            if (dciVal != null) {
+              const dciColor = dciVal >= 50 ? '#2ecc71' : dciVal >= 20 ? '#7ec8e3' : '#aaa';
+              dciHtml = `<div style="font-size:9px;font-weight:700;color:${dciColor};margin-top:2px;letter-spacing:0.3px">%DCI ${dciVal}%</div>`;
+            }
+          }
+          return `<td style="text-align:center;padding:3px 2px"><div class="week-cells">${miniCells}</div>${dciHtml}</td><td style="text-align:center;padding:2px 4px;white-space:nowrap">${trendHtml}</td>`;
+        }).join('')}
+      </tr>`;
+    });
+
+    html += '</tbody>';
+    document.getElementById(tableId).innerHTML = html;
+  }
+
+  buildTable('ibSubTable', ibCols);
+  buildTable('obSubTable', obCols);
+
+  // Auto-conclusions (always use all 4 weeks, regardless of current filter)
+  const allCols = [...ibCols, ...obCols];
+  const concLines = generateConclusions(allCols, RAW_WEEKLY.ALL);
+  const concBox = document.getElementById('conclusionsBox');
+  if (concBox) {
+    if (concLines.length) {
+      concBox.style.display = '';
+      concBox.innerHTML = '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#6c757d;margin-bottom:10px">Conclusiones W15-W18 por Subproceso (tendencia automatica)</div>' + concLines.join('');
+    } else {
+      concBox.style.display = 'none';
+    }
+  }
+}
+
+// ─── WoW MOVEMENTS ────────────────────────────────────────────────────────
+function renderWoW() {
+  const WEEK_ORDER = ['W15','W16','W17','W18'];
+  // Always compare the two most recent complete weeks regardless of week selector
+  const PREV = 'W18', CURR = 'W19';
+  const prevRaw = RAW_WEEKLY[PREV] || [];
+  const currRaw = RAW_WEEKLY[CURR] || [];
+
+  const cf = document.getElementById('filterCountry').value;
+  const ct = document.getElementById('filterTier')?.value || 'all';
+
+  // Update label dynamically
+  document.getElementById('wowLabel').textContent = `📈 Variación Semana a Semana · ${PREV} → ${CURR}`;
+
+  // Build per-FC comparison
+  const allIds = new Set([...prevRaw.map(r=>r.id), ...currRaw.map(r=>r.id)]);
+  const movers = [];
+
+  allIds.forEach(fcId => {
+    const prev = prevRaw.find(r => r.id === fcId);
+    const curr = currRaw.find(r => r.id === fcId);
+    if (!prev || !curr) return;
+    if (cf !== 'all' && curr.c !== cf) return;
+    if (ct !== 'all' && (HC_TIERS[fcId] || 'M') !== ct) return;
+
+    const pIB = computeIB(prev), cIB = computeIB(curr);
+    const pOB = computeOB(prev), cOB = computeOB(curr);
+    if (!cIB && !cOB) return;
+
+    const ibDelta    = (cIB && pIB && pIB.prod > 0) ? cIB.prod - pIB.prod : null;
+    const ibDeltaPct = (ibDelta != null) ? ibDelta / pIB.prod * 100 : null;
+    const obDelta    = (cOB && pOB && pOB.prod > 0) ? cOB.prod - pOB.prod : null;
+    const obDeltaPct = (obDelta != null) ? obDelta / pOB.prod * 100 : null;
+
+    // Volume-weighted impact in units (how many net units gained/lost vs same prod as W17)
+    const ibHours = curr.ib?.[0] || 0;
+    const obHours = curr.ob?.[0] || 0;
+    const totalImpact = (ibDelta != null ? ibDelta * ibHours : 0) + (obDelta != null ? obDelta * obHours : 0);
+
+    // Cause attribution
+    const causes = [];
+    function addCauses(cM, pM, prefix) {
+      if (!cM || !pM) return;
+      const tnsDelta  = cM.tns_pct  - pM.tns_pct;
+      const idleDelta = cM.idle_pct - pM.idle_pct;
+      const tndDelta  = cM.tnd_pct  - pM.tnd_pct;
+      const cUnits    = prefix==='IB' ? curr.ib?.[4] : curr.ob?.[4];
+      const pUnits    = prefix==='IB' ? prev.ib?.[4] : prev.ob?.[4];
+      const volDelta  = (cUnits && pUnits && pUnits > 0) ? (cUnits - pUnits) / pUnits * 100 : null;
+      if (Math.abs(tnsDelta)  >= 1.5) causes.push({ label: `%TNS ${prefix} ${tnsDelta>0?'▲':'▼'}${Math.abs(tnsDelta).toFixed(1)}pp`,  sev: tnsDelta  > 0 ? 'neg' : 'pos' });
+      if (Math.abs(idleDelta) >= 1.0) causes.push({ label: `%Idle ${prefix} ${idleDelta>0?'▲':'▼'}${Math.abs(idleDelta).toFixed(1)}pp`, sev: idleDelta > 0 ? 'neg' : 'pos' });
+      if (Math.abs(tndDelta)  >= 1.0) causes.push({ label: `%TnD ${prefix} ${tndDelta>0?'▲':'▼'}${Math.abs(tndDelta).toFixed(1)}pp`,  sev: tndDelta  > 0 ? 'tnd' : 'pos' });
+      if (volDelta != null && Math.abs(volDelta) >= 15) causes.push({ label: `Vol ${prefix} ${volDelta>0?'▲':'▼'}${Math.abs(volDelta).toFixed(0)}%`, sev: 'vol' });
+    }
+    addCauses(cIB, pIB, 'IB');
+    addCauses(cOB, pOB, 'OB');
+    if (!causes.length) causes.push({ label: totalImpact >= 0 ? 'Eficiencia operativa ↑' : 'Eficiencia operativa ↓', sev: totalImpact >= 0 ? 'pos' : 'neg' });
+
+    // 4-week combined prod sparkline
+    const sparkline = WEEK_ORDER.map(wk => {
+      const r = (RAW_WEEKLY[wk]||[]).find(x => x.id === fcId);
+      if (!r) return null;
+      const tU = (r.ib?.[4]||0) + (r.ob?.[4]||0);
+      const tH = (r.ib?.[0]||0) + (r.ob?.[0]||0);
+      return tH > 10 ? tU / tH : null;
+    });
+
+    movers.push({ id: fcId, country: curr.c, ibDelta, ibDeltaPct, obDelta, obDeltaPct, totalImpact, causes, sparkline, cIB, pIB, cOB, pOB });
+  });
+
+  // Sort lists
+  const improvers = [...movers].sort((a,b) => b.totalImpact - a.totalImpact).filter(m => m.totalImpact > 0).slice(0, 5);
+  const decliners = [...movers].sort((a,b) => a.totalImpact - b.totalImpact).filter(m => m.totalImpact < 0).slice(0, 5);
+
+  // Network summary stats
+  const ibM = movers.filter(m => m.ibDeltaPct != null);
+  const obM = movers.filter(m => m.obDeltaPct != null);
+  const avgIBDelta = ibM.length ? ibM.reduce((s,m)=>s+m.ibDeltaPct,0)/ibM.length : 0;
+  const avgOBDelta = obM.length ? obM.reduce((s,m)=>s+m.obDeltaPct,0)/obM.length : 0;
+  const netUnits   = movers.reduce((s,m)=>s+m.totalImpact,0);
+  const ibUp = ibM.filter(m=>m.ibDelta>0).length;
+  const obUp = obM.filter(m=>m.obDelta>0).length;
+
+  // Auto narrative
+  function narrativeTrend(arr, label) {
+    if (!arr.length) return '';
+    const vals = arr.filter(v => v != null);
+    if (vals.length < 2) return '';
+    const first = vals[0], last = vals[vals.length-1];
+    const pct = (last - first) / first * 100;
+    if (Math.abs(pct) < 3) return `${label} estable en 4 semanas.`;
+    return `${label} ${pct > 0 ? 'mejora' : 'cae'} ${Math.abs(pct).toFixed(0)}% en tendencia de 4 semanas.`;
+  }
+  const topImprover = improvers[0];
+  const topDecliner = decliners[0];
+  const ibTrendFcs  = movers.filter(m => m.sparkline.every((v,i) => i === 0 || m.sparkline[i-1] == null || v == null || v > m.sparkline[i-1]));
+
+  const ibColor = avgIBDelta >= 0 ? '#2e7d32' : '#c62828';
+  const ibSign  = avgIBDelta >= 0 ? '+' : '';
+  const obColor = avgOBDelta >= 0 ? '#2e7d32' : '#c62828';
+  const obSign  = avgOBDelta >= 0 ? '+' : '';
+  let narrative = `<strong>W18 vs W17 · Red completa:</strong> `;
+  narrative += `IB promedio <span style="color:${ibColor}">${ibSign}${avgIBDelta.toFixed(1)}%</span>`;
+  narrative += ` · OB promedio <span style="color:${obColor}">${obSign}${avgOBDelta.toFixed(1)}%</span>`;
+  narrative += ` · ${ibUp}/${ibM.length} FCs mejoraron IB, ${obUp}/${obM.length} OB. `;
+  if (topImprover) narrative += `Mayor ganancia: <strong>${topImprover.id}</strong> (${topImprover.ibDelta!=null?'IB '+(topImprover.ibDeltaPct>=0?'+':'')+topImprover.ibDeltaPct.toFixed(1)+'%':''}${topImprover.obDelta!=null?' OB '+(topImprover.obDeltaPct>=0?'+':'')+topImprover.obDeltaPct.toFixed(1)+'%':''}). `;
+  if (topDecliner) narrative += `Mayor caída: <strong>${topDecliner.id}</strong> (${topDecliner.ibDelta!=null?'IB '+(topDecliner.ibDeltaPct>=0?'+':'')+topDecliner.ibDeltaPct.toFixed(1)+'%':''}${topDecliner.obDelta!=null?' OB '+(topDecliner.obDeltaPct>=0?'+':'')+topDecliner.obDeltaPct.toFixed(1)+'%':''}). `;
+  if (ibTrendFcs.length >= 3) narrative += `<strong>${ibTrendFcs.length} FCs</strong> muestran tendencia de mejora sostenida IB en las 4 semanas.`;
+
+  // Sparkline renderer
+  function renderSparkline(spark) {
+    const valid = spark.filter(v => v != null);
+    if (!valid.length) return '';
+    const maxV = Math.max(...valid), minV = Math.min(...valid);
+    return `<div class="wow-sparkline">` + spark.map((v, i) => {
+      const wk = WEEK_ORDER[i];
+      if (v == null) return `<div class="wow-spark-wk"><div class="wow-spark-dot" style="background:#f0f0f0;color:#ccc">-</div><div class="wow-spark-label">${wk}</div></div>${i<3?'<span class="wow-spark-sep">›</span>':''}`;
+      const range = maxV - minV;
+      const norm  = range > 0 ? (v - minV) / range : 0.5;
+      const bg    = norm > 0.6 ? '#c8e6c9' : norm < 0.35 ? '#ffcdd2' : '#fff9c4';
+      return `<div class="wow-spark-wk"><div class="wow-spark-dot" style="background:${bg}">${Math.round(v)}</div><div class="wow-spark-label">${wk}</div></div>${i<3?'<span class="wow-spark-sep">›</span>':''}`;
+    }).join('') + `</div>`;
+  }
+
+  // Mover card renderer
+  function renderMoverCard(m, dir) {
+    const ibChip = m.ibDelta != null ? `<span class="wow-delta ${m.ibDelta>=0?'ib-up':'ib-dn'}">📦 IB ${m.ibDelta>=0?'▲':'▼'}${Math.abs(m.ibDeltaPct).toFixed(1)}% (${m.ibDelta>=0?'+':''}${Math.round(m.ibDelta)} u/h)</span>` : '';
+    const obChip = m.obDelta != null ? `<span class="wow-delta ${m.obDelta>=0?'ob-up':'ob-dn'}">🚀 OB ${m.obDelta>=0?'▲':'▼'}${Math.abs(m.obDeltaPct).toFixed(1)}% (${m.obDelta>=0?'+':''}${Math.round(m.obDelta)} u/h)</span>` : '';
+    const causeChips = m.causes.map(c => `<span class="wcc ${c.sev}">${c.label}</span>`).join('');
+    const impactK = Math.abs(m.totalImpact / 1000).toFixed(0);
+    return `<div class="wow-mover ${dir}">
+      <div class="wow-mover-head">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span class="wow-mover-id">${FLAGS[m.country]||''} ${m.id}</span>
+          <span class="country-pill ${m.country}">${m.country}</span>
+        </div>
+        <span style="font-size:10px;color:#9e9e9e">${dir==='up'?'+':'−'}${impactK}k u impacto neto</span>
+      </div>
+      <div class="wow-delta-row">${ibChip}${obChip}</div>
+      <div class="wow-cause-chips">${causeChips}</div>
+      ${renderSparkline(m.sparkline)}
+    </div>`;
+  }
+
+  document.getElementById('wowSection').innerHTML = `
+    <div class="wow-headline">
+      <div class="wow-summary-card ${avgIBDelta>=0?'pos':'neg'}">
+        <div class="wow-summary-lbl">Prod IB · Variación Media Red</div>
+        <div class="wow-summary-val" style="color:${avgIBDelta>=0?'#2e7d32':'#c62828'}">${avgIBDelta>=0?'+':''}${avgIBDelta.toFixed(1)}%</div>
+        <div class="wow-summary-sub">${ibUp} de ${ibM.length} FCs mejoraron · ${ibM.length-ibUp} cayeron</div>
+      </div>
+      <div class="wow-summary-card ${avgOBDelta>=0?'pos':'neg'}">
+        <div class="wow-summary-lbl">Prod OB · Variación Media Red</div>
+        <div class="wow-summary-val" style="color:${avgOBDelta>=0?'#2e7d32':'#c62828'}">${avgOBDelta>=0?'+':''}${avgOBDelta.toFixed(1)}%</div>
+        <div class="wow-summary-sub">${obUp} de ${obM.length} FCs mejoraron · ${obM.length-obUp} cayeron</div>
+      </div>
+      <div class="wow-summary-card ${netUnits>=0?'pos':'neg'} neu">
+        <div class="wow-summary-lbl">Impacto Neto en Unidades</div>
+        <div class="wow-summary-val" style="color:${netUnits>=0?'#2e7d32':'#c62828'}">${netUnits>=0?'+':''}${(netUnits/1000).toFixed(0)}k u</div>
+        <div class="wow-summary-sub">vs operar igual que W17</div>
+      </div>
+    </div>
+    <div class="wow-narrative">${narrative}</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">⬆️ Mayores Mejoras W17→W18 <small>top 5 · por impacto en unidades netas de red</small></div>
+        ${improvers.length ? improvers.map(m=>renderMoverCard(m,'up')).join('') : '<div class="wow-nodata">Sin mejoras significativas</div>'}
+      </div>
+      <div class="card">
+        <div class="card-title">⬇️ Mayores Caídas W17→W18 <small>top 5 · por impacto en unidades netas de red</small></div>
+        ${decliners.length ? decliners.map(m=>renderMoverCard(m,'dn')).join('') : '<div class="wow-nodata">Sin caídas significativas</div>'}
+      </div>
+    </div>
+  `;
+}
+
+// ─── FILTER + INIT ────────────────────────────────────────────────────────
+
+// === WEEK STATE ===
+let currentWeek = 'W18';
+let rawFcs = RAW_WEEKLY.W17;   // default to W17
+
+// Recompute DATA from a given rawFcs array
+function computeFromRaw(rawArr) {
+  const computed = rawArr.map(r => {
+    const ib  = computeIB(r);
+    const ob  = computeOB(r);
+    const tot = computeTOT(r);
+    return { id: r.id, country: r.c, ib, ob, tot, tier: HC_TIERS[r.id] || 'M' };
+  }).filter(d => d.ib);
+
+  const tmpColVals = (obj, key) => computed.map(d => d[obj]?.[key]).filter(v => v != null && isFinite(v));
+  const tmpPctRank = (val, arr, hib) => {
+    if (val == null || !isFinite(val)) return 0.5;
+    const below = arr.filter(v => v < val).length;
+    const r = below / Math.max(arr.length - 1, 1);
+    return hib ? (1 - r) : r;
+  };
+
+  computed.forEach(d => {
+    const metrics = [
+      {v:d.ib?.prod,     a:tmpColVals('ib','prod'),     hib:true},
+      {v:d.ob?.prod,     a:tmpColVals('ob','prod'),     hib:true},
+      {v:d.ib?.tns_pct,  a:tmpColVals('ib','tns_pct'),  hib:false},
+      {v:d.ob?.tns_pct,  a:tmpColVals('ob','tns_pct'),  hib:false},
+      {v:d.tot?.tns_pct, a:tmpColVals('tot','tns_pct'), hib:false},
+      {v:d.ib?.idle_pct, a:tmpColVals('ib','idle_pct'), hib:false},
+      {v:d.ob?.idle_pct, a:tmpColVals('ob','idle_pct'), hib:false},
+      {v:d.ib?.tnd_pct,  a:tmpColVals('ib','tnd_pct'),  hib:false},
+      {v:d.ob?.tnd_pct,  a:tmpColVals('ob','tnd_pct'),  hib:false},
+      {v:d.tot?.tnd_pct, a:tmpColVals('tot','tnd_pct'), hib:false},
+    ];
+    const scores = metrics.filter(m=>m.v!=null).map(m=>tmpPctRank(m.v,m.a,m.hib));
+    d.score = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*100);
+  });
+
+  const allH = computed.map(d=>(d.ib?.t||0)+(d.ob?.t||0));
+  computed.forEach(d => {
+    d.total_h = (d.ib?.t||0) + (d.ob?.t||0);
+    const below = allH.filter(h=>h<d.total_h).length;
+    d.vol_pct = below / Math.max(allH.length-1,1);
+    d.priority = Math.round(d.score*0.6 + d.vol_pct*100*0.4);
+  });
+
+  return computed;
+}
+
+function computeNS(fcs) {
+  const cv = (obj, key) => fcs.map(d => d[obj]?.[key]).filter(v => v != null && isFinite(v));
+  return {
+    ib_prod:  { med:median(cv('ib','prod')),  p25:pct(cv('ib','prod'),.25),  p75:pct(cv('ib','prod'),.75),  p90:pct(cv('ib','prod'),.90) },
+    ob_prod:  { med:median(cv('ob','prod')),  p25:pct(cv('ob','prod'),.25),  p75:pct(cv('ob','prod'),.75),  p90:pct(cv('ob','prod'),.90) },
+    ib_tns:   { med:median(cv('ib','tns_pct')), p75:pct(cv('ib','tns_pct'),.75), p25:pct(cv('ib','tns_pct'),.25) },
+    ob_tns:   { med:median(cv('ob','tns_pct')), p75:pct(cv('ob','tns_pct'),.75) },
+    tot_tns:  { med:median(cv('tot','tns_pct')), p75:pct(cv('tot','tns_pct'),.75) },
+    ib_idle:  { med:median(cv('ib','idle_pct')), p75:pct(cv('ib','idle_pct'),.75) },
+    ob_idle:  { med:median(cv('ob','idle_pct')), p75:pct(cv('ob','idle_pct'),.75) },
+  };
+}
+
+function changeWeek(wk) {
+  currentWeek = wk;
+  rawFcs = RAW_WEEKLY[wk] || RAW_WEEKLY.ALL;
+  rebuildDashboard();
+  const subtitleMap = {
+    ALL: 'W15-W18 2026 (acumulado)',
+    W15: 'W15 2026 · 6-12 abr',
+    W16: 'W16 2026 · 13-19 abr',
+    W17: 'W17 2026 · 20-26 abr',
+    W18: 'W18 2026 · 27 abr-3 may'
+  };
+  document.querySelector('.header-sub').textContent =
+    'Red de Fulfillment Centers MercadoLibre · ' + (subtitleMap[wk]||wk);
+}
+
+function rebuildDashboard() {
+  const cf = document.getElementById('filterCountry').value;
+  const ct = document.getElementById('filterTier')?.value || 'all';
+  const allFcs = computeFromRaw(rawFcs);
+  const activeNS = computeNS(allFcs);
+  Object.assign(NS, activeNS);
+  let fcs = cf === 'all' ? allFcs : allFcs.filter(d => d.country === cf);
+  if (ct !== 'all') fcs = fcs.filter(d => d.tier === ct);
+  renderKPIs(fcs);
+  try { renderWoW(); } catch(e) { const el=document.getElementById('wowSection'); if(el) el.innerHTML='<div style="padding:16px;color:#c62828;font-size:11px;background:#fff3f3;border-radius:8px">WoW error: '+e.message+'</div>'; }
+  renderPriorityList(fcs);
+  renderBenchmarks(fcs);
+  renderAlerts(fcs);
+  renderTable(fcs);
+  renderCharts(fcs);
+  renderSubproc(fcs);
+}
+
+function applyFilter() {
+  rebuildDashboard();
+}
+
+// Initialize with W16 (most recent week, matches LMS Monitor default)
+changeWeek('W19');
+</script>
+</body>
+</html>
