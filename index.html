@@ -256,7 +256,7 @@ td.fc-name{text-align:left;font-weight:700;font-size:11px;min-width:80px}
       <div class="filter-group">
         <label>Semana</label>
         <select id="week-sel" onchange="changeWeek(this.value)">
-          <option value="ALL">W15-W18 acumulado</option>
+          <option value="ALL">W16-W19 acumulado</option>
           <option value="W16">W16 (13-19 abr)</option>
           <option value="W17">W17 (20-26 abr)</option>
           <option value="W18">W18 (27 abr-3 may)</option>
@@ -417,8 +417,8 @@ td.fc-name{text-align:left;font-weight:700;font-size:11px;min-width:80px}
   </div>
 
   <div class="footer">
-    RISE FMB Operations Pulse · MercadoLibre · 2026-04-29 · Fuente: meli-bi-data.WHOWNER.DM_LMS_CONSOLIDATED_METRICS_BY_DIMENSIONS · W15–W18 2026<br>
-    Metodología: Prod = ITEM_COUNT / (TOTAL_PROCESS_TIME/3600) · DIMENSION_KEY='area' (inbound/outbound) · Valores idénticos a LMS Monitor · W15–W18 acumulado y por semana
+    RISE FMB Operations Pulse · MercadoLibre · 2026-05-12 · Fuente: meli-bi-data.WHOWNER.DM_LMS_CONSOLIDATED_METRICS_BY_DIMENSIONS · W16–W19 2026<br>
+    Metodología: Prod = ITEM_COUNT / (TOTAL_PROCESS_TIME/3600) · DIMENSION_KEY='area' (inbound/outbound) · Valores idénticos a LMS Monitor · W16–W19 acumulado y por semana
   </div>
 </div>
 
@@ -1260,7 +1260,7 @@ function showSubTab(tab) {
 
 // === CONCLUSIONS GENERATOR ===
 function generateConclusions(cols, rawAll) {
-  const WEEKS = ['W15','W16','W17','W18'];
+  const WEEKS = ['W16','W17','W18','W19'];
   const f0loc = v => v == null ? null : Math.round(v);
 
   const lines = [];
@@ -1342,8 +1342,8 @@ function renderSubproc(fcs) {
   ];
 
   function buildTable(tableId, cols) {
-    const WEEKS = ['W15','W16','W17','W18'];
-    const wkLabels = {W14:'W14',W15:'W15',W16:'W16',W17:'W17'};
+    const WEEKS = ['W16','W17','W18','W19'];
+    const wkLabels = {W16:'W16',W17:'W17',W18:'W18',W19:'W19'};
 
     // Pre-compute all values per week for colour coding
     const refRaw = RAW_WEEKLY.W17;
@@ -1451,7 +1451,7 @@ function renderSubproc(fcs) {
 
 // ─── WoW MOVEMENTS ────────────────────────────────────────────────────────
 function renderWoW() {
-  const WEEK_ORDER = ['W15','W16','W17','W18'];
+  const WEEK_ORDER = ['W16','W17','W18','W19'];
   // Always compare the two most recent complete weeks regardless of week selector
   const PREV = 'W18', CURR = 'W19';
   const prevRaw = RAW_WEEKLY[PREV] || [];
@@ -1614,11 +1614,11 @@ function renderWoW() {
     <div class="wow-narrative">${narrative}</div>
     <div class="grid-2">
       <div class="card">
-        <div class="card-title">⬆️ Mayores Mejoras W17→W18 <small>top 5 · por impacto en unidades netas de red</small></div>
+        <div class="card-title">⬆️ Mayores Mejoras W18→W19 <small>top 5 · por impacto en unidades netas de red</small></div>
         ${improvers.length ? improvers.map(m=>renderMoverCard(m,'up')).join('') : '<div class="wow-nodata">Sin mejoras significativas</div>'}
       </div>
       <div class="card">
-        <div class="card-title">⬇️ Mayores Caídas W17→W18 <small>top 5 · por impacto en unidades netas de red</small></div>
+        <div class="card-title">⬇️ Mayores Caídas W18→W19 <small>top 5 · por impacto en unidades netas de red</small></div>
         ${decliners.length ? decliners.map(m=>renderMoverCard(m,'dn')).join('') : '<div class="wow-nodata">Sin caídas significativas</div>'}
       </div>
     </div>
@@ -1694,11 +1694,11 @@ function changeWeek(wk) {
   rawFcs = RAW_WEEKLY[wk] || RAW_WEEKLY.ALL;
   rebuildDashboard();
   const subtitleMap = {
-    ALL: 'W15-W18 2026 (acumulado)',
-    W15: 'W15 2026 · 6-12 abr',
+    ALL: 'W16-W19 2026 (acumulado)',
     W16: 'W16 2026 · 13-19 abr',
     W17: 'W17 2026 · 20-26 abr',
-    W18: 'W18 2026 · 27 abr-3 may'
+    W18: 'W18 2026 · 27 abr-3 may',
+    W19: 'W19 2026 · 4-10 may'
   };
   document.querySelector('.header-sub').textContent =
     'Red de Fulfillment Centers MercadoLibre · ' + (subtitleMap[wk]||wk);
