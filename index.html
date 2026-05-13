@@ -1345,8 +1345,8 @@ function renderSubproc(fcs) {
     const WEEKS = ['W16','W17','W18','W19'];
     const wkLabels = {W16:'W16',W17:'W17',W18:'W18',W19:'W19'};
 
-    // Pre-compute all values per week for colour coding
-    const refRaw = RAW_WEEKLY.W17;
+    // Pre-compute all values per week for colour coding — use cumulative RAW
+    const refRaw = rawFcs;
     const allVals = cols.map(col =>
       refRaw.map(r => subProd(col.getter(r), col.key, r.id)).filter(v => v != null)
     );
@@ -1360,8 +1360,8 @@ function renderSubproc(fcs) {
       ${cols.map((c,ci) => {
         const isDCI = isIB && ci === 0;
         const sub = isDCI
-          ? `<div style="font-size:8px;font-weight:400;color:rgba(255,230,0,.7)">W14 · W15 · W16 · W17 | Tendencia &nbsp;<span style="color:#7ec8e3">%DCI(W17)</span></div>`
-          : `<div style="font-size:8px;font-weight:400;color:rgba(255,230,0,.7)">W14 · W15 · W16 · W17 | Tendencia</div>`;
+          ? `<div style="font-size:8px;font-weight:400;color:rgba(255,230,0,.7)">W16 · W17 · W18 · W19 | Tendencia &nbsp;<span style="color:#7ec8e3">%DCI(W19)</span></div>`
+          : `<div style="font-size:8px;font-weight:400;color:rgba(255,230,0,.7)">W16 · W17 · W18 · W19 | Tendencia</div>`;
         return `<th style="${thStyle}" colspan="2">${c.label}${sub}</th>`;
       }).join('')}
     </tr></thead><tbody>`;
@@ -1372,6 +1372,17 @@ function renderSubproc(fcs) {
         const src = RAW_WEEKLY[wk] || [];
         wkRows[wk] = src.find(x => x.id === d.id);
       });
+      // Augment weekly rows with sub data from cumulative RAW if missing
+      const cumRow = rawFcs.find(x => x.id === d.id);
+      if (cumRow?.sub) {
+        WEEKS.forEach(wk => {
+          if (wkRows[wk] && !wkRows[wk].sub) {
+            wkRows[wk] = Object.assign({}, wkRows[wk], { sub: cumRow.sub, hu: cumRow.sub.hu, pw: cumRow.sub.pw });
+          } else if (!wkRows[wk]) {
+            wkRows[wk] = Object.assign({}, cumRow);
+          }
+        });
+      }
       // Check at least one week has data
       const hasAny = WEEKS.some(wk => wkRows[wk]);
       if (!hasAny) return;
@@ -1417,7 +1428,7 @@ function renderSubproc(fcs) {
           // %DCI badge for IB Checkin column (ci===0)
           let dciHtml = '';
           if (isIB && ci === 0) {
-            const dciVal = wkRows['W17']?.sub?.dci_pct ?? wkRows['W16']?.sub?.dci_pct ?? null;
+            const dciVal = wkRows['W19']?.sub?.dci_pct ?? wkRows['W18']?.sub?.dci_pct ?? null;
             if (dciVal != null) {
               const dciColor = dciVal >= 50 ? '#2ecc71' : dciVal >= 20 ? '#7ec8e3' : '#aaa';
               dciHtml = `<div style="font-size:9px;font-weight:700;color:${dciColor};margin-top:2px;letter-spacing:0.3px">%DCI ${dciVal}%</div>`;
@@ -1442,7 +1453,7 @@ function renderSubproc(fcs) {
   if (concBox) {
     if (concLines.length) {
       concBox.style.display = '';
-      concBox.innerHTML = '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#6c757d;margin-bottom:10px">Conclusiones W15-W18 por Subproceso (tendencia automatica)</div>' + concLines.join('');
+      concBox.innerHTML = '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#6c757d;margin-bottom:10px">Conclusiones W16-W19 por Subproceso (tendencia automatica)</div>' + concLines.join('');
     } else {
       concBox.style.display = 'none';
     }
